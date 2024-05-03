@@ -56,6 +56,41 @@ In diesem Beispiel:
 - **Konfiguration**: Konfigurationseinstellungen für jedes Modul sollten über die Engine zugänglich gemacht werden, idealerweise durch Umgebungsvariablen oder Konfigurationsdateien.
 - **Lebenszyklus-Management**: Die Engine sollte die Fähigkeit haben, den Lebenszyklus jedes Moduls zu steuern, einschließlich Starten, Stoppen und Neustarten bei Bedarf.
 
+### Warum diese API-Struktur?
+
+Die Architektur der API für die Module der Kurmann.Videoschnitt.Engine folgt einem bewussten Designprinzip, das darauf abzielt, die Entwicklung effizient und die Integration sicher zu gestalten. Die Entscheidung für eine Trennung von Command- und Query-Operationen, gepaart mit einer klaren Callback-Struktur, stützt sich auf mehrere zentrale Überlegungen:
+
+#### 1. Klare Trennung von Commands und Queries (CQRS-Prinzip)
+
+Die Anwendung des Command Query Responsibility Segregation (CQRS) Prinzips ermöglicht es, dass:
+- **Commands** (Schreiboperationen) klare Aktionen auslösen und Seiteneffekte verursachen können, deren Ergebnisse durch den Rückgabetyp `Result` ohne zusätzliche Daten (also ohne generisches `T`) kommuniziert werden.
+- **Queries** (Leseoperationen) Daten abfragen und in Form von `Result<T>` zurückgeben, wobei `T` den Typ der angeforderten Daten darstellt.
+
+Diese Trennung fördert nicht nur die Übersichtlichkeit und Wartbarkeit des Codes, sondern erleichtert auch die Optimierung der Datenverwaltung und die Skalierbarkeit der Anwendung.
+
+#### 2. Immediate Response Handling durch Callbacks
+
+Durch das direkte Einbeziehen von Callbacks (`Action<Result>` oder `Action<Result<T>>`) in die API-Definition wird sichergestellt, dass Entwickler:
+- Unmittelbar über das Ergebnis einer Operation informiert werden.
+- Gezwungen sind, sich bereits bei der Implementierung des Moduls mit der Verarbeitung von Erfolg und Misserfolg auseinanderzusetzen. 
+- Fehlerbehandlungsstrategien frühzeitig in den Entwicklungsprozess integrieren können, was die Robustheit des Gesamtsystems verbessert.
+
+#### 3. Förderung der Fehlerresilienz
+
+Die explizite Rückgabe von `Result` oder `Result<T>` ermöglicht eine differenzierte Fehlerbehandlung:
+- **Erfolg** und **Fehler** werden als Teil des normalen Programmflusses behandelt, nicht als Ausnahmen, was zu einer stabileren und vorhersehbareren Software führt.
+- Entwickler können auf Basis des Rückgabewerts entscheiden, wie im Fehlerfall verfahren werden soll, beispielsweise durch Wiederholung des Befehls, Benutzerbenachrichtigungen oder andere Kompensationslogiken.
+
+#### 4. Unterstützung asynchroner Verarbeitung
+
+Obwohl die aktuelle Implementierung Callbacks verwendet, ist das Muster so gewählt, dass es leicht zu asynchronen Patterns erweitert werden kann, die auf `Task` oder `Task<T>` basieren:
+- Dies bietet Flexibilität für zukünftige Erweiterungen, ohne die bestehende Modulstruktur umfassend anpassen zu müssen.
+- Asynchrone Verarbeitung ist besonders kritisch in Umgebungen mit hoher Last oder bei Operationen, die signifikante Latenz verursachen können (z.B. Netzwerkaufrufe, I/O-Operationen).
+
+#### Zusammenfassung
+
+Die gewählte API-Struktur mit ihrem Schwerpunkt auf dem CQRS-Prinzip, der direkten Integration von Response-Handling und der klaren Fehlerbehandlung trägt entscheidend zur Effizienz, Sicherheit und Robustheit der Kurmann.Videoschnitt.Engine bei. Sie stellt sicher, dass das System nicht nur funktionell vollständig, sondern auch in der Lage ist, sich dynamisch an veränderte Anforderungen anzupassen.
+
 ### Dokumentation und Standards
 
 - Jedes Modul sollte eine umfassende Dokumentation seiner API bereitstellen, die klare Anweisungen zu den erwarteten Parametern, den Rückgabewerten und dem Fehlerverhalten enthält.
