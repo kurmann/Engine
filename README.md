@@ -18,9 +18,30 @@ Die Kurmann.Videoschnitt.Engine ist entworfen, um eine robuste und flexible Plat
 
 Die Engine ist als modularer Monolith konzipiert, was bedeutet, dass sie zwar aus einzelnen, unabhängigen Modulen besteht, diese jedoch innerhalb eines einzigen, einheitlichen Prozesses laufen. Dieser Ansatz kombiniert die Einfachheit und Effizienz eines monolithischen Designs mit der Flexibilität und Skalierbarkeit modularer Komponenten.
 
-## Verwendung
+### API-Mechanismus der Module
 
-Die Engine ist primär für Entwickler gedacht, die an der Erweiterung der Plattform arbeiten möchten. Die Einrichtung und Verwendung der Engine erfordert ein Verständnis der internen APIs und der Konfigurationsmechanismen, die in der Dokumentation ausführlich beschrieben sind.
+Jedes Modul in der Kurmann.Videoschnitt.Engine ist dafür ausgelegt, über eine gut definierte API mit der zentralen Engine zu kommunizieren. Diese Schnittstellen sind entscheidend für die effiziente und fehlerfreie Interaktion innerhalb des Gesamtsystems. Die folgenden Richtlinien sollen Entwicklern helfen, ihre Module so zu implementieren, dass sie nahtlos in die Engine integriert werden können.
+
+#### Allgemeine Prinzipien
+
+1. **Interface-Definition**: Jedes Modul muss ein klar definiertes Interface implementieren, das seine Funktionen und die Art und Weise, wie es mit der Engine kommuniziert, beschreibt. Diese Interfaces sollten spezifische Methoden für die Aufgaben enthalten, die das Modul ausführen kann.
+
+2. **Dependency Injection**: Module sollten so gestaltet sein, dass sie ihre Abhängigkeiten über Konstruktoren oder öffentliche Eigenschaften injizieren lassen können. `IServiceCollection` wird genutzt, um diese Abhängigkeiten zur Laufzeit bereitzustellen und zu verwalten.
+
+3. **Callback-Mechanismen**: Um asynchrone Operationen zu unterstützen, sollten Module Callbacks oder ähnliche Mechanismen verwenden, um die Ergebnisse von Operationen zurück an die Engine zu kommunizieren. 
+
+4. **Fehlerbehandlung**: Jedes Modul sollte robuste Fehlerbehandlungsmechanismen implementieren, um sicherzustellen, dass Fehler ordnungsgemäß erfasst und behandelt werden, ohne dass sie das Gesamtsystem beeinträchtigen.
+
+#### Beispielhafte API-Struktur
+
+Hier ist ein Beispiel für eine mögliche API-Struktur eines Moduls:
+
+```csharp
+public interface IVideoProcessingModule
+{
+    void ProcessVideo(VideoProcessingParameters parameters, Action<Result> onResult);
+}
+```
 
 ## Beitrag
 
