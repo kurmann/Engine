@@ -34,43 +34,61 @@ Jedes Modul in der Kurmann.Videoschnitt.Engine ist dafür ausgelegt, über eine 
 
 ### Command und Query Trennung (CQRS)
 
-Die API-Struktur jedes Moduls basiert auf dem Prinzip der Command Query Responsibility Segregation (CQRS), das eine klare Trennung zwischen Befehlen (Commands), die den Systemzustand ändern, und Abfragen (Queries), die Daten zurückgeben, vorsieht:
+Die API-Struktur jedes Moduls in der Kurmann.Videoschnitt.Engine basiert auf dem Prinzip der Command Query Responsibility Segregation (CQRS). Dieses Prinzip trennt deutlich zwischen Befehlen (Commands), die den Systemzustand ändern, und Abfragen (Queries), die Informationen aus dem System abrufen. Diese Trennung ermöglicht es, die Operationen effizient und klar zu gestalten und trägt zur Verbesserung der Systemintegrität bei.
 
-- **Initiate Commands**: Methoden, die eine Veränderung oder eine Aktion im System bewirken und lediglich bestätigen, dass der Befehl angenommen wurde. Die endgültigen Ergebnisse dieser Befehle werden durch Events kommuniziert.
+#### Kategorien der API-Operationen:
 
-- **Direct Commands**: Synchrone Commands, die unmittelbare Ergebnisse liefern und direkt über die Rückgabewerte der Funktionen kommuniziert werden.
+1. **Initiate Commands**:
+   - **Beschreibung**: Asynchrone Befehle, die einen Prozess starten und eine Bestätigung über dessen Initiierung zurückgeben. Die vollständigen Ergebnisse oder der Endstatus des Prozesses werden über Events kommuniziert.
+   - **Interface**:
+     ```csharp
+     Task<Result> InitiateCommand(CommandParams parameters);
+     ```
 
-- **Initiate Queries**: Asynchrone Abfragen, deren Ergebnisse nicht sofort verfügbar sind. Diese werden ähnlich wie Initiate Commands behandelt, wobei die Ergebnisse später durch Events zur Verfügung gestellt werden.
+2. **Direct Commands**:
+   - **Beschreibung**: Synchrone Befehle, die eine sofortige Ausführung und Rückmeldung über das Ergebnis der Operation ermöglichen.
+   - **Interface**:
+     ```csharp
+     Result ExecuteCommand(CommandParams parameters);
+     ```
 
-- **Direct Queries**: Synchrone Abfragen, die unmittelbar Ergebnisse in Form von `Result<T>` liefern, wobei `T` den Typ der angeforderten Daten darstellt.
+3. **Initiate Queries**:
+   - **Beschreibung**: Asynchrone Abfragen, deren Ergebnisse aufgrund ihrer potenziell langen Ausführungszeit oder ihrer Komplexität später über Events bereitgestellt werden.
+   - **Interface**:
+     ```csharp
+     Task<Result> InitiateQuery(QueryParams parameters);
+     ```
 
-### Beispielhafte API-Struktur
+4. **Direct Queries**:
+   - **Beschreibung**: Synchrone Abfragen, die sofort Daten zurückliefern und direkt eine Antwort in Form von `Result<T>` geben, wobei `T` den Typ der zurückgegebenen Daten darstellt.
+   - **Interface**:
+     ```csharp
+     Result<T> ExecuteQuery<T>(QueryParams parameters);
+     ```
 
-Hier ist ein Beispiel für eine mögliche API-Struktur eines Moduls:
+#### Beispielhafte API-Struktur
+
+Die folgende Schnittstellenstruktur illustriert, wie diese vier API-Operationstypen innerhalb eines hypothetischen Videoverarbeitungsmoduls implementiert werden könnten:
 
 ```csharp
 public interface IVideoProcessingModule
 {
-    Task<Result> InitiateProcessCommand(CommandParams parameters);
-    Result<IEnumerable<VideoData>> DirectFetchQuery(QueryParams query);
+    Task<Result> InitiateProcessVideo(CommandParams parameters);
+    Result ProcessImmediateVideo(CommandParams parameters);
+    Task<Result> InitiateFetchVideoData(QueryParams parameters);
+    Result<VideoData> FetchVideoDataDirectly(QueryParams parameters);
 }
 ```
 
-In diesem Beispiel:
+#### Integration in die Engine
 
-- `CommandParams` und `QueryParams` sind spezifische Parameterklassen für Commands und Queries.
-- `Result` und `Result<T>` sind Typen, die verwendet werden, um das Ergebnis der Operationen sofort oder nach Abschluss der asynchronen Verarbeitung durch Events zurückzumelden.
-
-### Integration in die Engine
-
-- **Registrierung**: Module müssen sich bei ihrer Initialisierung selbst bei der Engine registrieren, indem sie ihre Dienste zur `IServiceCollection` hinzufügen.
-- **Konfiguration**: Konfigurationseinstellungen für jedes Modul sollten über die Engine zugänglich gemacht werden, idealerweise durch Umgebungsvariablen oder Konfigurationsdateien.
-- **Lebenszyklus-Management**: Die Engine sollte die Fähigkeit haben, den Lebenszyklus jedes Moduls zu steuern, einschließlich Starten, Stoppen und Neustarten bei Bedarf.
+- **Registrierung**: Jedes Modul registriert seine spezifischen Commands und Queries beim Systemstart, indem es die entsprechenden Services zur `IServiceCollection` hinzufügt.
+- **Konfiguration**: Konfigurationseinstellungen spezifisch für jedes Modul sollten über zentrale Konfigurationsdateien oder Umgebungsvariablen zugänglich gemacht werden, um die Modularität und Flexibilität des Gesamtsystems zu fördern.
+- **Lebenszyklus-Management**: Durch die Nutzung von .NET's Hosted Services wird der Lebenszyklus jedes Moduls effizient verwaltet, was zu einer verbesserten Stabilität und Zuverlässigkeit führt.
 
 ### Dokumentation und Standards
 
-- Jedes Modul sollte eine umfassende Dokumentation seiner API bereitstellen, die klare Anweisungen zu den erwarteten Parametern, den Rückgabewerten und dem Fehlerverhalten enthält.
-- Die Einhaltung von Coding-Standards und Best Practices ist entscheidend, um die Qualität und Wartbarkeit des Gesamtsystems zu gewährleisten.
+Eine umfassende Dokumentation der API ist unerlässlich, um eine korrekte und effiziente Nutzung der bereitgestellten Funktionalitäten zu gewährleisten. Die Dokumentation sollte detaillierte Informationen zu den erwarteten Parametern, den Rückgabewerten und dem Verhalten bei Fehlern für jede Art von Command oder Query enthalten.
 
 ## Lebenszyklusmanagement durch .NET's Hosted Service
 
