@@ -116,6 +116,43 @@ Die gewählte API-Struktur mit ihrem Schwerpunkt auf dem CQRS-Prinzip, der direk
 
 Die Implementierung dieser API-Prinzipien stellt sicher, dass alle Module effizient mit der Kurmann.Videoschnitt.Engine kommunizieren und integrieren können, wodurch das Gesamtsystem zuverlässiger und einfacher zu verwalten ist.
 
+## Lebenszyklusmanagement durch .NET's Hosted Service
+
+Um ein effizientes Management des Lebenszyklus für alle Module in der Kurmann.Videoschnitt.Engine zu gewährleisten, nutzen wir die Funktionalitäten von `.NET's Hosted Service`. Dieser Ansatz bietet eine robuste und standardisierte Methode, um Start, Ausführung und Beendigung von Diensten innerhalb der Anwendung zu steuern.
+
+### Integration in die Engine
+
+Jedes Modul erbt von `IHostedService`, das spezielle Methoden zur Verwaltung des Lebenszyklus bereitstellt:
+
+- **StartAsync**: Wird aufgerufen, wenn die Anwendung startet. Hier können Module ihre Initialisierung und den Start ihrer Operationen durchführen.
+- **StopAsync**: Wird aufgerufen, wenn die Anwendung eine ordnungsgemäße Beendigung durchführt. Module können hier Bereinigungen und notwendige Abschlüsse ihrer Operationen vornehmen.
+
+Durch die Vererbung dieser Schnittstelle erhalten die Module einen strukturierten und zuverlässigen Rahmen, um ihre Lebenszyklusereignisse in Einklang mit dem Gesamtsystem zu handhaben.
+
+### Vorteile des Hosted Service
+
+- **Konsistenz**: Das Verhalten der Module während des Startens und Beendens wird durch das .NET Framework standardisiert, was die Konsistenz über alle Module hinweg sicherstellt.
+- **Zuverlässigkeit**: Durch die Verwendung standardisierter Methoden reduziert sich das Risiko von Fehlern bei der Implementierung des Lebenszyklusmanagements.
+- **Einfachheit**: Entwickler müssen sich nicht um die Details der Lebenszyklussteuerung kümmern, sondern können sich auf die Kernlogik der Module konzentrieren.
+
+### Beispiel für ein Modul als Hosted Service
+
+```csharp
+public class VideoProcessingService : IHostedService
+{
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        // Initialisierungslogik hier
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        // Bereinigungslogik hier
+        return Task.CompletedTask;
+    }
+}
+
 ## Beitrag
 
 Beiträge zur Kurmann.Videoschnitt.Engine sind willkommen. Wenn Sie Fehler finden oder neue Features vorschlagen möchten, eröffnen Sie bitte ein Issue im Repository.
