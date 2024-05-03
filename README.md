@@ -18,10 +18,6 @@ Die Kurmann.Videoschnitt.Engine ist entworfen, um eine robuste und flexible Plat
 
 Die Engine ist als modularer Monolith konzipiert, was bedeutet, dass sie zwar aus einzelnen, unabhängigen Modulen besteht, diese jedoch innerhalb eines einzigen, einheitlichen Prozesses laufen. Dieser Ansatz kombiniert die Einfachheit und Effizienz eines monolithischen Designs mit der Flexibilität und Skalierbarkeit modularer Komponenten.
 
-Natürlich! Hier ist ein Teilkapitel für deine Dokumentation, das die API-Mechanismen der einzelnen Module beschreibt. Dieses Kapitel bietet eine klare Anleitung, wie die Module implementiert werden sollten, um effektiv mit der Kurmann.Videoschnitt.Engine zu kommunizieren. 
-
-Natürlich! Hier ist eine überarbeitete Version des Kapitels über den API-Mechanismus der Module, die die Trennung von Command- und Query-Operationen gemäß dem CQRS-Prinzip klarer hervorhebt. Dies wird für eine konsistente und integrierte Darstellung in der Dokumentation sorgen.
-
 ## API-Mechanismus der Module
 
 Jedes Modul in der Kurmann.Videoschnitt.Engine ist dafür ausgelegt, über eine gut definierte API mit der zentralen Engine zu kommunizieren. Diese Schnittstellen sind entscheidend für die effiziente und fehlerfreie Interaktion innerhalb des Gesamtsystems. Die folgenden Richtlinien sollen Entwicklern helfen, ihre Module so zu implementieren, dass sie nahtlos in die Engine integriert werden können.
