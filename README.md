@@ -20,6 +20,8 @@ Die Engine ist als modularer Monolith konzipiert, was bedeutet, dass sie zwar au
 
 Natürlich! Hier ist ein Teilkapitel für deine Dokumentation, das die API-Mechanismen der einzelnen Module beschreibt. Dieses Kapitel bietet eine klare Anleitung, wie die Module implementiert werden sollten, um effektiv mit der Kurmann.Videoschnitt.Engine zu kommunizieren. 
 
+Natürlich! Hier ist eine überarbeitete Version des Kapitels über den API-Mechanismus der Module, die die Trennung von Command- und Query-Operationen gemäß dem CQRS-Prinzip klarer hervorhebt. Dies wird für eine konsistente und integrierte Darstellung in der Dokumentation sorgen.
+
 ## API-Mechanismus der Module
 
 Jedes Modul in der Kurmann.Videoschnitt.Engine ist dafür ausgelegt, über eine gut definierte API mit der zentralen Engine zu kommunizieren. Diese Schnittstellen sind entscheidend für die effiziente und fehlerfreie Interaktion innerhalb des Gesamtsystems. Die folgenden Richtlinien sollen Entwicklern helfen, ihre Module so zu implementieren, dass sie nahtlos in die Engine integriert werden können.
@@ -30,9 +32,17 @@ Jedes Modul in der Kurmann.Videoschnitt.Engine ist dafür ausgelegt, über eine 
 
 2. **Dependency Injection**: Module sollten so gestaltet sein, dass sie ihre Abhängigkeiten über Konstruktoren oder öffentliche Eigenschaften injizieren lassen können. `IServiceCollection` wird genutzt, um diese Abhängigkeiten zur Laufzeit bereitzustellen und zu verwalten.
 
-3. **Callback-Mechanismen**: Um asynchrone Operationen zu unterstützen, sollten Module Callbacks oder ähnliche Mechanismen verwenden, um die Ergebnisse von Operationen zurück an die Engine zu kommunizieren. 
+3. **Callback-Mechanismen**: Um asynchrone Operationen zu unterstützen, sollten Module Callbacks oder ähnliche Mechanismen verwenden, um die Ergebnisse von Operationen zurück an die Engine zu kommunizieren.
 
 4. **Fehlerbehandlung**: Jedes Modul sollte robuste Fehlerbehandlungsmechanismen implementieren, um sicherzustellen, dass Fehler ordnungsgemäß erfasst und behandelt werden, ohne dass sie das Gesamtsystem beeinträchtigen.
+
+### Command und Query Trennung (CQRS)
+
+Die API-Struktur jedes Moduls basiert auf dem Prinzip der Command Query Responsibility Segregation (CQRS), das eine klare Trennung zwischen Befehlen (Commands), die den Systemzustand ändern, und Abfragen (Queries), die Daten zurückgeben, vorsieht:
+
+- **Commands**: Methoden, die eine Veränderung oder eine Aktion im System bewirken und einen `Result`-Typ zurückgeben, der den Erfolg oder Misserfolg der Operation anzeigt.
+  
+- **Queries**: Methoden, die Informationen abrufen und in Form von `Result<T>` zurückgeben, wobei `T` den Typ der angeforderten Daten darstellt.
 
 ### Beispielhafte API-Struktur
 
@@ -41,20 +51,28 @@ Hier ist ein Beispiel für eine mögliche API-Struktur eines Moduls:
 ```csharp
 public interface IVideoProcessingModule
 {
-    void ProcessVideo(VideoProcessingParameters parameters, Action<Result> onResult);
+    void ProcessCommand(CommandParams parameters, Action<Result> onResult);
+    void FetchData(QueryParams query, Action<Result<IEnumerable<VideoData>>> onResult);
 }
 ```
 
 In diesem Beispiel:
 
-- `VideoProcessingParameters` enthält alle notwendigen Eingaben, die das Modul zur Verarbeitung des Videos benötigt.
-- `Action<Result>` ist ein Callback, der verwendet wird, um das Ergebnis der Videoverarbeitung zurück an die Engine zu melden.
+- `CommandParams` und `QueryParams` sind spezifische Parameterklassen für Commands und Queries.
+- `Action<Result>` und `Action<Result<T>>` sind Callbacks, die verwendet werden, um das Ergebnis der Operationen zurück an die Engine zu melden.
 
 ### Integration in die Engine
 
 - **Registrierung**: Module müssen sich bei ihrer Initialisierung selbst bei der Engine registrieren, indem sie ihre Dienste zur `IServiceCollection` hinzufügen.
 - **Konfiguration**: Konfigurationseinstellungen für jedes Modul sollten über die Engine zugänglich gemacht werden, idealerweise durch Umgebungsvariablen oder Konfigurationsdateien.
 - **Lebenszyklus-Management**: Die Engine sollte die Fähigkeit haben, den Lebenszyklus jedes Moduls zu steuern, einschließlich Starten, Stoppen und Neustarten bei Bedarf.
+
+### Dokumentation und Standards
+
+- Jedes Modul sollte eine umfassende Dokumentation seiner API bereitstellen, die klare Anweisungen zu den erwarteten Parametern, den Rückgabewerten und dem Fehlerverhalten enthält.
+- Die Einhaltung von Coding-Standards und Best Practices ist entscheidend, um die Qualität und Wartbarkeit des Gesamtsystems zu gewährleisten.
+
+Die Implementierung dieser API-Prinzipien stellt sicher, dass alle Module effizient mit der Kurmann.Videoschnitt.Engine kommunizieren und integrieren können, wodurch das Gesamtsystem zuverlässiger und einfacher zu verwalten ist.
 
 ### Warum diese API-Struktur?
 
