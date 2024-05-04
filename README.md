@@ -176,16 +176,14 @@ Diese Methode gewährleistet, dass jeder Bereich nur auf die für ihn relevanten
 
 Durch diese strukturierte Herangehensweise an die Konfiguration unterstützt die Kurmann.Videoschnitt.Engine eine effiziente Skalierung und Anpassung an sich ändernde Anforderungen, während sie eine robuste und fehlerresistente Plattform für die Videobearbeitung bietet.
 
-## Beitrag
+## Mitwirken
 
-Beiträge zur Kurmann.Videoschnitt.Engine sind willkommen. Wenn Sie Fehler finden oder neue Features vorschlagen möchten, eröffnen Sie bitte ein Issue im Repository.
+Derzeit entwickle ich das Projekt im Alleingang. Unterstützung ist willkommen. Bitte erstellen Sie ein GitHub-Issue als Anfrage.
 
 ## Lizenz
 
-Dieses Projekt ist unter der [MIT Lizenz](LICENSE.md) lizenziert.
+Dieses Projekt ist unter der Apache-2.0-Lizenz lizenziert – siehe die Datei [LICENSE](LICENSE) für Details.
 
 ## Kontakt
 
-Für weitere Informationen oder Unterstützung kontaktieren Sie mich bitte über [info@kurmann.com](mailto:info@kurmann.com).
-
-Vielen Dank für Ihr Interesse an der Kurmann.Videoschnitt.Engine. Wir hoffen, dass dieses Projekt Ihre Erwartungen erfüllt und zur Verbesserung Ihrer Videobearbeitungsprojekte beiträgt.
+Falls Sie Fragen haben oder Unterstützung benötigen, erstellen Sie bitte ein Issue im GitHub-Repository.
