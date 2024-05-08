@@ -1,16 +1,20 @@
 # Kurmann.Videoschnitt.Engine
 
 ## Überblick
-Kurze Einführung in die Videoschnitt-Engine und ihren Zweck.
+
+Die Kurmann.Videoschnitt.Engine ist das Kernstück unserer Videobearbeitungsplattform und dient als zentrale Steuereinheit, die die verschiedenen spezialisierten Module koordiniert. Diese Module arbeiten zusammen, um umfassende Lösungen im Bereich des Videoschnitts zu bieten. Entwickelt mit dem Ziel, Flexibilität und Robustheit zu maximieren, bietet die Engine eine Plattform für die Integration von Videobearbeitungsmodulen wie Rendering, Schnitt, Effekte und mehr.
 
 ## Architektur
-Beschreibung der allgemeinen Architektur und Designphilosophie der Engine.
 
 ### Modularer Aufbau
-Erklärung des modularen Aufbaus und der Vorteile dieses Ansatzes.
+
+Die Kurmann.Videoschnitt.Engine ist als modularer Monolith konzipiert, was bedeutet, dass sie aus einzelnen, unabhängigen Modulen besteht, die innerhalb eines einzigen, einheitlichen Prozesses laufen. Dieser Ansatz kombiniert die Einfachheit und Effizienz eines monolithischen Designs mit der Flexibilität und Skalierbarkeit modularer Komponenten. Jedes Modul ist darauf ausgelegt, spezifische Aufgaben innerhalb der Videobearbeitungsplattform zu übernehmen und über eine klar definierte API mit der zentralen Engine zu kommunizieren.
 
 ### Engine als Koordinator
-Rolle der Engine als zentraler Koordinator und Mediator.
+
+Die Hauptrolle der Engine ist es, als Koordinator zu fungieren, der die Ausführung von Aufgaben überwacht, den Datenfluss zwischen den Modulen verwaltet und die Einhaltung der Geschäftslogiken über das gesamte System sicherstellt. Sie ist nicht nur eine Laufzeitumgebung, sondern orchestriert auch die technischen und geschäftlichen Aspekte der Videobearbeitungsprozesse. Durch die zentrale Steuerung der Workflows und die Koordination der Interaktionen zwischen den Modulen sorgt die Engine dafür, dass die Videoprojekte effizient und fehlerfrei von Anfang bis Ende verwaltet werden.
+
+Diese Architektur erleichtert die Wartung und Skalierung der Plattform, indem sie eine klare Trennung der Verantwortlichkeiten ermöglicht und gleichzeitig die Interdependenzen zwischen den Modulen minimiert. So können Entwickler und Techniker schnell auf Veränderungen reagieren und neue Funktionen oder Verbesserungen mit minimalen Störungen für den Gesamtbetrieb implementieren.
 
 ## Kernfunktionen
 Auflistung und Beschreibung der wichtigsten Funktionen der Engine.
