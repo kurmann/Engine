@@ -1,107 +1,112 @@
-# Videoschnitt-Steuereinheit
+# Kurmann.Videoschnitt.Engine
 
-Die Kurmann.Videoschnitt.Engine, der zentralen Steuereinheit für die Videobearbeitungsplattform von Kurmann, ist das Herzstück des modularen Systems und koordiniert die verschiedenen spezialisierten Module, die zusammenarbeiten, um umfassende Lösungen im Bereich Videoschnitt zu bieten.
+## Überblick
 
-## Über die Engine
+Die Kurmann.Videoschnitt.Engine ist das Kernstück unserer Videobearbeitungsplattform und dient als zentrale Steuereinheit, die die verschiedenen spezialisierten Module koordiniert. Diese Module arbeiten zusammen, um umfassende Lösungen im Bereich des Videoschnitts zu bieten. Entwickelt mit dem Ziel, Flexibilität und Robustheit zu maximieren, bietet die Engine eine Plattform für die Integration von Videobearbeitungsmodulen wie Rendering, Schnitt, Effekte und mehr.
 
-Die Kurmann.Videoschnitt.Engine ist entworfen, um eine robuste und flexible Plattform bereitzustellen, die die Integration verschiedener Videobearbeitungsmodule ermöglicht. Diese Engine ist nicht nur eine Laufzeitumgebung, sondern orchestriert auch die Ausführung von Aufgaben, verwaltet den Datenfluss zwischen Modulen und sorgt für die Einhaltung der Geschäftslogiken über das gesamte System.
+## Architektur
 
-### Kernfunktionen
+### Modularer Aufbau
 
-- **Modulintegration**: Die Engine verwendet `IServiceCollection` für die flexible und konfigurierbare Integration von Modulen. Jedes Modul kann spezifische Funktionen wie Rendering, Schnitt, Effekte und mehr handhaben.
+Die Kurmann.Videoschnitt.Engine ist als modularer Monolith konzipiert, was bedeutet, dass sie aus einzelnen, unabhängigen Modulen besteht, die innerhalb eines einzigen, einheitlichen Prozesses laufen. Dieser Ansatz kombiniert die Einfachheit und Effizienz eines monolithischen Designs mit der Flexibilität und Skalierbarkeit modularer Komponenten. Jedes Modul ist darauf ausgelegt, spezifische Aufgaben innerhalb der Videobearbeitungsplattform zu übernehmen und über eine klar definierte API mit der zentralen Engine zu kommunizieren.
 
-- **Businesslogik-Orchestrierung**: Neben der technischen Koordination der Module steuert die Engine auch die Geschäftslogik, die die Entscheidungsfindung innerhalb des gesamten Systems leitet.
+### Engine als Koordinator
 
-- **Workflow-Management**: Die Engine ist verantwortlich für die Steuerung der Workflows, die notwendig sind, um Videoprojekte von Anfang bis Ende zu managen.
+Die Hauptrolle der Engine ist es, als Koordinator zu fungieren, der die Ausführung von Aufgaben überwacht, den Datenfluss zwischen den Modulen verwaltet und die Einhaltung der Geschäftslogiken über das gesamte System sicherstellt. Sie ist nicht nur eine Laufzeitumgebung, sondern orchestriert auch die technischen und geschäftlichen Aspekte der Videobearbeitungsprozesse. Durch die zentrale Steuerung der Workflows und die Koordination der Interaktionen zwischen den Modulen sorgt die Engine dafür, dass die Videoprojekte effizient und fehlerfrei von Anfang bis Ende verwaltet werden.
 
-## Architektur allgemein
+Diese Architektur erleichtert die Wartung und Skalierung der Plattform, indem sie eine klare Trennung der Verantwortlichkeiten ermöglicht und gleichzeitig die Interdependenzen zwischen den Modulen minimiert. So können Entwickler und Techniker schnell auf Veränderungen reagieren und neue Funktionen oder Verbesserungen mit minimalen Störungen für den Gesamtbetrieb implementieren.
 
-Die Engine ist als modularer Monolith konzipiert, was bedeutet, dass sie zwar aus einzelnen, unabhängigen Modulen besteht, diese jedoch innerhalb eines einzigen, einheitlichen Prozesses laufen. Dieser Ansatz kombiniert die Einfachheit und Effizienz eines monolithischen Designs mit der Flexibilität und Skalierbarkeit modularer Komponenten.
+## Kernfunktionen
+
+Die Kurmann.Videoschnitt.Engine bietet eine Vielzahl von Kernfunktionen, die darauf ausgelegt sind, eine leistungsfähige und flexible Videobearbeitungsplattform bereitzustellen. Jede dieser Funktionen trägt dazu bei, die Produktivität zu steigern und die Benutzerfreundlichkeit zu verbessern. Hier sind die wichtigsten Funktionen, die von unserer Engine angeboten werden:
+
+### Modulintegration
+
+Die Engine verwendet das `IServiceCollection`-Framework, um die Integration verschiedener Videobearbeitungsmodule flexibel und konfigurierbar zu gestalten. Jedes Modul, wie z.B. Rendering, Schnitt oder Effekte, ist speziell darauf ausgelegt, bestimmte Funktionen zu handhaben und kann nach Bedarf in das Gesamtsystem eingefügt oder entfernt werden. Dies ermöglicht eine anpassbare Lösung, die sich sowohl an kleine als auch an große Produktionsumgebungen anpassen lässt.
+
+### Businesslogik-Orchestrierung
+
+Neben der technischen Koordination der Module steuert die Engine die Geschäftslogik, die die Entscheidungsfindung innerhalb des gesamten Systems leitet. Dies umfasst das Management von Benutzeranforderungen, die Priorisierung von Aufgaben und die Optimierung der Ressourcennutzung. Durch diese zentrale Steuerung wird sichergestellt, dass alle Aktionen im Einklang mit den Geschäftszielen und Kundenanforderungen stehen.
+
+### Workflow-Management
+
+Die Engine ist verantwortlich für die Steuerung der Workflows, die notwendig sind, um Videoprojekte von Anfang bis Ende zu managen. Dies beinhaltet die Planung und Ausführung von Aufgaben, das Management von Abhängigkeiten zwischen den Aufgaben und die Überwachung des Fortschritts. Die Workflow-Management-Funktionen sind darauf ausgerichtet, eine effiziente Durchführung der Videobearbeitungsprozesse zu gewährleisten und die Einhaltung der Projektpläne sicherzustellen.
+
+### Event-Handling und Messaging
+
+Durch die Integration der `Kurmann.Messaging`-Bibliothek unterstützt die Engine ein leistungsstarkes, asynchrones Event-Handling, das eine lose Kopplung zwischen den Komponenten ermöglicht. Die Engine und die Module nutzen diese Funktion, um Zustandsänderungen, wichtige Ereignisse und andere relevante Informationen zu kommunizieren, wodurch eine reaktive und adaptive Systemumgebung geschaffen wird.
 
 ## API-Mechanismus der Module
 
-Jedes Modul in der Kurmann.Videoschnitt.Engine ist dafür ausgelegt, über eine gut definierte API mit der zentralen Engine zu kommunizieren. Diese Schnittstellen sind entscheidend für die effiziente und fehlerfreie Interaktion innerhalb des Gesamtsystems. Die folgenden Richtlinien sollen Entwicklern helfen, ihre Module so zu implementieren, dass sie nahtlos in die Engine integriert werden können.
+Die Kurmann.Videoschnitt.Engine ist darauf ausgelegt, durch eine gut definierte API die Kommunikation und Interaktion zwischen den einzelnen Modulen und der zentralen Engine zu ermöglichen. Dieses Kapitel beschreibt die verschiedenen Aspekte der API-Struktur, die es Entwicklern ermöglicht, ihre Module so zu implementieren, dass sie nahtlos in die Engine integriert werden können.
 
 ### Allgemeine Prinzipien
 
-1. **Interface-Definition**: Jedes Modul muss ein klar definiertes Interface implementieren, das seine Funktionen und die Art und Weise, wie es mit der Engine kommuniziert, beschreibt. Diese Interfaces sollten spezifische Methoden für die Aufgaben enthalten, die das Modul ausführen kann.
+Die API jedes Moduls ist so gestaltet, dass sie eine klare Trennung zwischen verschiedenen Operationstypen bietet und sich an die Command Query Responsibility Segregation (CQRS) hält. Dieses Prinzip trennt die Befehle (Commands), die den Systemzustand ändern, von den Abfragen (Queries), die Daten abrufen, ohne den Zustand zu ändern. Durch diese Trennung wird die Effizienz gesteigert und die Klarheit der Operationen verbessert.
 
-2. **Dependency Injection**: Module sollten so gestaltet sein, dass sie ihre Abhängigkeiten über Konstruktoren oder öffentliche Eigenschaften injizieren lassen können. `IServiceCollection` wird genutzt, um diese Abhängigkeiten zur Laufzeit bereitzustellen und zu verwalten.
+#### Commands
 
-3. **Callback-Mechanismen**: Um asynchrone Operationen zu unterstützen, sollten Module Callbacks oder ähnliche Mechanismen verwenden, um die Ergebnisse von Operationen zurück an die Engine zu kommunizieren.
+Commands sind Operationen, die eine Änderung im System bewirken. Sie können synchron oder asynchron ausgeführt werden:
 
-4. **Fehlerbehandlung**: Jedes Modul sollte robuste Fehlerbehandlungsmechanismen implementieren, um sicherzustellen, dass Fehler ordnungsgemäß erfasst und behandelt werden, ohne dass sie das Gesamtsystem beeinträchtigen.
+- **Initiate Commands**: Asynchrone Befehle, die einen Prozess starten, und eine Bestätigung über dessen Initiierung zurückgeben. Der Endstatus oder das Ergebnis wird über Events kommuniziert.
+  ```csharp
+  Task<Result> InitiateCommand(CommandParams parameters);
+  ```
+- **Direct Commands**: Synchrone Befehle, die sofort ausgeführt werden und direkt eine Antwort auf das Ergebnis der Operation liefern.
+  ```csharp
+  Result ExecuteCommand(CommandParams parameters);
+  ```
 
-### Command und Query Trennung (CQRS)
+#### Queries
 
-Die API-Struktur jedes Moduls in der Kurmann.Videoschnitt.Engine basiert auf dem Prinzip der Command Query Responsibility Segregation (CQRS). Dieses Prinzip trennt deutlich zwischen Befehlen (Commands), die den Systemzustand ändern, und Abfragen (Queries), die Informationen aus dem System abrufen. Diese Trennung ermöglicht es, die Operationen effizient und klar zu gestalten und trägt zur Verbesserung der Systemintegrität bei.
+Queries sind Anfragen, die Informationen aus dem System abrufen, ohne den Zustand zu verändern. Sie können ebenfalls synchron oder asynchron sein:
 
-#### Kategorien der API-Operationen:
+- **Direct Queries**: Synchrone Abfragen, die sofort Daten zurückliefern.
+  ```csharp
+  Result<T> ExecuteQuery<T>(QueryParams parameters);
+  ```
+- **Initiate Queries**: Asynchrone Abfragen, deren Ergebnisse später bereitgestellt werden.
+  ```csharp
+  Task<Result> InitiateQuery(QueryParams parameters);
+  ```
 
-1. **Initiate Commands**:
-   - **Beschreibung**: Asynchrone Befehle, die einen Prozess starten und eine Bestätigung über dessen Initiierung zurückgeben. Die vollständigen Ergebnisse oder der Endstatus des Prozesses werden über Events kommuniziert.
-   - **Interface**:
-     ```csharp
-     Task<Result> InitiateCommand(CommandParams parameters);
-     ```
+### Event-Driven APIs
 
-2. **Direct Commands**:
-   - **Beschreibung**: Synchrone Befehle, die eine sofortige Ausführung und Rückmeldung über das Ergebnis der Operation ermöglichen.
-   - **Interface**:
-     ```csharp
-     Result ExecuteCommand(CommandParams parameters);
-     ```
+Um die Interaktionen innerhalb der Plattform effizient und reaktionsfähig zu gestalten, unterstützt die API auch ein eventgesteuertes Modell. Dieses Modell ermöglicht es Modulen, Events zu generieren, die von der Engine oder anderen Modulen abonniert und verarbeitet werden können, um eine lose Kopplung und hohe Reaktionsfähigkeit des Gesamtsystems zu gewährleisten.
 
-3. **Initiate Queries**:
-   - **Beschreibung**: Asynchrone Abfragen, deren Ergebnisse aufgrund ihrer potenziell langen Ausführungszeit oder ihrer Komplexität später über Events bereitgestellt werden.
-   - **Interface**:
-     ```csharp
-     Task<Result> InitiateQuery(QueryParams parameters);
-     ```
+### API-Dokumentation und Standards
 
-4. **Direct Queries**:
-   - **Beschreibung**: Synchrone Abfragen, die sofort Daten zurückliefern und direkt eine Antwort in Form von `Result<T>` geben, wobei `T` den Typ der zurückgegebenen Daten darstellt.
-   - **Interface**:
-     ```csharp
-     Result<T> ExecuteQuery<T>(QueryParams parameters);
-     ```
-
-#### Beispielhafte API-Struktur
-
-Die folgende Schnittstellenstruktur illustriert, wie diese vier API-Operationstypen innerhalb eines hypothetischen Videoverarbeitungsmoduls implementiert werden könnten:
-
-```csharp
-public interface IVideoProcessingModule
-{
-    Task<Result> InitiateProcessVideo(CommandParams parameters);
-    Result ProcessImmediateVideo(CommandParams parameters);
-    Task<Result> InitiateFetchVideoData(QueryParams parameters);
-    Result<VideoData> FetchVideoDataDirectly(QueryParams parameters);
-}
-```
-
-#### Integration in die Engine
-
-- **Registrierung**: Jedes Modul registriert seine spezifischen Commands und Queries beim Systemstart, indem es die entsprechenden Services zur `IServiceCollection` hinzufügt.
-- **Konfiguration**: Konfigurationseinstellungen spezifisch für jedes Modul sollten über zentrale Konfigurationsdateien oder Umgebungsvariablen zugänglich gemacht werden, um die Modularität und Flexibilität des Gesamtsystems zu fördern.
-- **Lebenszyklus-Management**: Durch die Nutzung von .NET's Hosted Services wird der Lebenszyklus jedes Moduls effizient verwaltet, was zu einer verbesserten Stabilität und Zuverlässigkeit führt.
-
-### Dokumentation und Standards
-
-Eine umfassende Dokumentation der API ist unerlässlich, um eine korrekte und effiziente Nutzung der bereitgestellten Funktionalitäten zu gewährleisten. Die Dokumentation sollte detaillierte Informationen zu den erwarteten Parametern, den Rückgabewerten und dem Verhalten bei Fehlern für jede Art von Command oder Query enthalten.
+Eine umfassende Dokumentation jeder API ist unerlässlich, um eine korrekte und effiziente Nutzung der bereitgestellten Funktionalitäten sicherzustellen. Die Dokumentation sollte detaillierte Informationen zu den erwarteten Parametern, den Rückgabewerten, und dem Verhalten bei Fehlern für jede Art von Command oder Query enthalten. Dies stellt sicher, dass Entwickler klare und präzise Anleitungen haben, wie sie die APIs nutzen können, um eine nahtlose Integration und optimale Leistung zu erreichen.
 
 ## Lebenszyklusmanagement durch .NET's Hosted Service
 
-Um ein effizientes Management des Lebenszyklus für alle Module in der Kurmann.Videoschnitt.Engine zu gewährleisten, nutzen wir die Funktionalitäten von `.NET's Hosted Service`. Dieser Ansatz bietet eine robuste und standardisierte Methode, um Start, Ausführung und Beendigung von Diensten innerhalb der Anwendung zu steuern.
+Ein effizientes Management des Lebenszyklus für alle Module innerhalb der Kurmann.Videoschnitt.Engine ist entscheidend für die Aufrechterhaltung einer stabilen und zuverlässigen Plattform. Um dieses Ziel zu erreichen, setzen wir auf die Funktionalitäten von `.NET's Hosted Service`. Dieser Ansatz bietet eine robuste und standardisierte Methode, um den Start, die Ausführung und die Beendigung von Diensten innerhalb der Anwendung zu steuern.
 
 ### Integration in die Engine
 
-Jedes Modul erbt von `IHostedService`, das spezielle Methoden zur Verwaltung des Lebenszyklus bereitstellt:
+Jedes Modul in der Kurmann.Videoschnitt.Engine implementiert das `IHostedService`-Interface, welches spezielle Methoden zur Verwaltung des Lebenszyklus bereitstellt. Diese Schnittstelle erlaubt es, Module als Dienste zu behandeln, die durch das .NET Core Hosting Framework verwaltet werden.
 
-- **StartAsync**: Wird aufgerufen, wenn die Anwendung startet. Hier können Module ihre Initialisierung und den Start ihrer Operationen durchführen.
-- **StopAsync**: Wird aufgerufen, wenn die Anwendung eine ordnungsgemäße Beendigung durchführt. Module können hier Bereinigungen und notwendige Abschlüsse ihrer Operationen vornehmen.
+#### StartAsync und StopAsync Methoden
 
-Durch die Vererbung dieser Schnittstelle erhalten die Module einen strukturierten und zuverlässigen Rahmen, um ihre Lebenszyklusereignisse in Einklang mit dem Gesamtsystem zu handhaben.
+Die `IHostedService`-Schnittstelle definiert zwei Hauptmethoden, die für das Lebenszyklusmanagement von Modulen entscheidend sind:
+
+- **StartAsync**: Diese Methode wird aufgerufen, wenn die Anwendung startet. Hier können Module ihre Initialisierungslogik durchführen, Ressourcen allokieren und notwendige Startkonfigurationen einstellen. Dies ist der ideale Ort für Module, um Verbindungen zu Datenbanken herzustellen, Netzwerkressourcen zu initialisieren oder einfach ihre interne Zustände vorzubereiten.
+  ```csharp
+  public Task StartAsync(CancellationToken cancellationToken)
+  {
+      // Initialisierungslogik hier
+      return Task.CompletedTask;
+  }
+  ```
+
+- **StopAsync**: Diese Methode wird aufgerufen, wenn die Anwendung eine ordnungsgemäße Beendigung durchführt. Hier können Module ihre Bereinigungslogik durchführen, offene Ressourcen freigeben und sicherstellen, dass alle Daten korrekt gespeichert sind, bevor die Anwendung vollständig herunterfährt.
+  ```csharp
+  public Task StopAsync(CancellationToken cancellationToken)
+  {
+      // Bereinigungslogik hier
+      return Task.CompletedTask;
+  }
+  ```
 
 ### Vorteile des Hosted Service
 
@@ -111,79 +116,80 @@ Durch die Vererbung dieser Schnittstelle erhalten die Module einen strukturierte
 
 ### Beispiel für ein Modul als Hosted Service
 
+Hier ist ein Beispiel, wie ein typisches Modul als `IHostedService` implementiert werden könnte:
+
 ```csharp
 public class VideoProcessingService : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        // Initialisierungslogik hier
+        // Initialisierungslogik für das Videoverarbeitungsmodul
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        // Bereinigungslogik hier
+        // Bereinigungslogik für das Videoverarbeitungsmodul
         return Task.CompletedTask;
     }
 }
 ```
 
+Dieses Kapitel zeigt, wie durch die Verwendung von .NET's Hosted Services ein effizientes Lebenszyklusmanagement für Module innerhalb der Kurmann.Videoschnitt.Engine realisiert wird, was zu einer verbesserten Stabilität und Zuverlässigkeit der Plattform führt.
+
 ## Konfiguration
 
-Die Kurmann.Videoschnitt.Engine setzt auf hohe Modularität und Flexibilität in der Konfiguration der verschiedenen Bereiche ihrer Architektur. Durch die Nutzung des Options-Patterns von .NET können Bereiche unabhängig konfiguriert werden, ohne dass sich Einstellungen gegenseitig überschreiben oder zentral definiert werden müssen. Dies fördert die Entkopplung innerhalb des Systems und minimiert Abhängigkeiten.
+Die Konfiguration in der Kurmann.Videoschnitt.Engine spielt eine entscheidende Rolle bei der Anpassung und Skalierung der Plattform, um unterschiedlichen Anforderungen gerecht zu werden. Die Engine setzt auf hohe Modularität und Flexibilität in der Konfiguration der verschiedenen Bereiche ihrer Architektur, wobei das Options-Pattern von .NET genutzt wird, um Bereich-spezifische Einstellungen zu ermöglichen.
 
-### Unabhängige Konfiguration der Bereiche
+### Konfigurationsmanagement
 
-Jeder Bereich der Videobearbeitungsplattform besitzt eine dedizierte Konfigurationssektion, die spezifisch auf seine Anforderungen zugeschnitten ist. Dies wird durch separate Konfigurationsabschnitte innerhalb der `appsettings.json` oder anderer Konfigurationsquellen ermöglicht.
+Die Verwaltung der Konfiguration erfolgt über `appsettings.json`-Dateien und/oder Umgebungsvariablen, die es erlauben, die Einstellungen je nach Deployment-Umgebung einfach zu ändern. Durch die Trennung der Konfigurationseinstellungen in dedizierte Abschnitte für jedes Modul, kann die Engine flexibel auf die Bedürfnisse jedes Bereichs eingehen, ohne dass sich Einstellungen gegenseitig beeinflussen.
+
+#### Unabhängige Konfiguration der Bereiche
+
+Jeder Bereich der Videobearbeitungsplattform besitzt eine dedizierte Konfigurationssektion, die spezifisch auf seine Anforderungen zugeschnitten ist. Dies stellt sicher, dass die Konfigurationen isoliert voneinander bleiben und vereinfacht die Wartung und Erweiterung der Plattform.
 
 #### Beispiel für bereichsspezifische Konfigurationen:
 
 ```json
 {
-  "InfuseMediaLibrary": {
-    "LibraryRootPath": "/media/library/root"
+  "MediaLibraryOptions": {
+    "LibraryPath": "/path/to/media/library"
   },
-  "FinalCutPro": {
-    "ExportPath": "/exports/finalcut"
+  "VideoProcessingOptions": {
+    "DefaultCodec": "HEVC",
+    "Resolution": "4K"
   }
 }
 ```
 
-In diesem Beispiel hat jeder Bereich (InfuseMediaLibrary und FinalCutPro) seine eigene Sektion, was sicherstellt, dass die Konfigurationen isoliert voneinander bleiben.
+### Integration in die Engine
 
-### Vorteile der isolierten Konfigurationsabschnitte
-
-- **Keine Überschneidungen**: Durch die isolierte Speicherung der Konfigurationsdaten in eigenen Abschnitten wird vermieden, dass Einstellungen anderer Bereiche unbeabsichtigt überschrieben werden.
-- **Reduzierte Abhängigkeiten**: Jeder Bereich kann seine Konfigurationsdaten unabhängig von anderen Teilen des Systems beziehen, was die Komplexität reduziert.
-- **Skalierbarkeit**: Neue Bereiche können einfach durch Hinzufügen neuer Konfigurationsabschnitte integriert werden, ohne bestehende Bereiche zu beeinflussen.
-
-### Implementierung in .NET
-
-Die Konfigurationen für jeden Bereich werden in der Startup-Konfiguration der Anwendung registriert und über `IServiceCollection` bereitgestellt, wodurch eine starke Typisierung und eine einfache Verwaltung der Konfigurationsdaten ermöglicht wird.
+Zur Laufzeit werden diese Konfigurationen durch das .NET Core DI-System injiziert und in die entsprechenden Modulkomponenten geladen. Dies geschieht über das `IServiceCollection`-Framework, das eine starke Typisierung und einfache Verwaltung der Konfigurationsdaten ermöglicht.
 
 ```csharp
-services.Configure<MediaLibraryOptions>(Configuration.GetSection("InfuseMediaLibrary"));
-services.Configure<FinalCutProOptions>(Configuration.GetSection("FinalCutPro"));
+services.Configure<MediaLibraryOptions>(Configuration.GetSection("MediaLibraryOptions"));
+services.Configure<VideoProcessingOptions>(Configuration.GetSection("VideoProcessingOptions"));
 ```
-
-Diese Methode gewährleistet, dass jeder Bereich nur auf die für ihn relevanten Einstellungen zugreift und zentrale Abhängigkeiten vermieden werden.
 
 ### Best Practices für die Konfiguration
 
-- **Klare Vertragsdefinition**: Jeder Bereich sollte eine klar definierte Schnittstelle für seine Konfigurationsoptionen haben, repräsentiert durch entsprechende Klassen in C#.
+- **Klare Vertragsdefinition**: Jeder Konfigurationsbereich sollte durch eine klare und gut definierte Schnittstelle repräsentiert werden, um die Integration und das Management der Konfigurationsdaten zu vereinfachen.
 - **Einsatz von Umgebungsvariablen für übergreifende Einstellungen**: Für allgemeine oder sicherheitssensible Konfigurationen sollten Umgebungsvariablen verwendet werden, um die Flexibilität und Sicherheit zu erhöhen.
-- **Konsistente Namenskonventionen**: Die Namen der Konfigurationsbereiche und deren Schlüssel sollten sorgfältig gewählt werden, um Klarheit und Konsistenz sicherzustellen.
+- **Konsistente Namenskonventionen**: Die Namen der Konfigurationsbereiche und ihrer Schlüssel sollten sorgfältig gewählt werden, um Klarheit und Konsistenz zu gewährleisten.
 
-Durch diese strukturierte Herangehensweise an die Konfiguration unterstützt die Kurmann.Videoschnitt.Engine eine effiziente Skalierung und Anpassung an sich ändernde Anforderungen, während sie eine robuste und fehlerresistente Plattform für die Videobearbeitung bietet.
+Die durchdachte Konfigurationsstrategie der Kurmann.Videoschnitt.Engine gewährleistet eine effiziente Skalierung und Anpassung an sich ändernde Anforderungen, während sie eine robuste und fehlerresistente Plattform für die Videobearbeitung bietet.
+
 
 ## Mitwirken
 
-Derzeit entwickle ich das Projekt im Alleingang. Unterstützung ist willkommen. Bitte erstellen Sie ein GitHub-Issue als Anfrage.
+1. **Issue einreichen**: Wenn Sie einen Fehler finden oder eine Funktion anfordern möchten, eröffnen Sie ein Issue im GitHub-Repository.
+2. **Pull Requests**: Wenn Sie eine direkte Änderung oder Ergänzung vorschlagen möchten, senden Sie einen Pull Request mit einer klaren Beschreibung Ihrer Änderungen.
 
 ## Lizenz
 
-Dieses Projekt ist unter der Apache-2.0-Lizenz lizenziert – siehe die Datei [LICENSE](LICENSE) für Details.
+Dieses Projekt ist unter der Apache-2.0-Lizenz lizenziert. Weitere Details finden Sie in der Datei [LICENSE](LICENSE) im GitHub-Repository. Diese Lizenz ermöglicht es sowohl kommerziellen als auch nicht-kommerziellen Nutzern, die Software frei zu verwenden, zu modifizieren und weiterzuverbreiten, unter der Bedingung, dass Änderungen und Erweiterungen unter der gleichen Lizenz bleiben.
 
 ## Kontakt
 
-Falls Sie Fragen haben oder Unterstützung benötigen, erstellen Sie bitte ein Issue im GitHub-Repository.
+Falls Sie Fragen haben oder Unterstützung benötigen, zögern Sie nicht, ein Issue im GitHub-Repository zu eröffnen oder uns direkt zu kontaktieren. Unsere Kontaktinformationen finden Sie auf der GitHub-Projektseite.
