@@ -157,8 +157,8 @@ Jeder Bereich der Videobearbeitungsplattform besitzt eine dedizierte Konfigurati
     "LibraryPath": "/path/to/media/library"
   },
   "VideoProcessingOptions": {
-    "DefaultCodec": "H264",
-    "Resolution": "1080p"
+    "DefaultCodec": "HEVC",
+    "Resolution": "4K"
   }
 }
 ```
