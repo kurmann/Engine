@@ -138,19 +138,58 @@ public class VideoProcessingService : IHostedService
 Dieses Kapitel zeigt, wie durch die Verwendung von .NET's Hosted Services ein effizientes Lebenszyklusmanagement für Module innerhalb der Kurmann.Videoschnitt.Engine realisiert wird, was zu einer verbesserten Stabilität und Zuverlässigkeit der Plattform führt.
 
 ## Konfiguration
-Details zur Konfiguration der Engine und der einzelnen Module.
 
-### Umgebungsvariablen und Einstellungen
-Wie Umgebungsvariablen und spezifische Einstellungen gehandhabt werden.
+Die Konfiguration in der Kurmann.Videoschnitt.Engine spielt eine entscheidende Rolle bei der Anpassung und Skalierung der Plattform, um unterschiedlichen Anforderungen gerecht zu werden. Die Engine setzt auf hohe Modularität und Flexibilität in der Konfiguration der verschiedenen Bereiche ihrer Architektur, wobei das Options-Pattern von .NET genutzt wird, um Bereich-spezifische Einstellungen zu ermöglichen.
 
-## Dokumentation und Standards
-Informationen zur Verfügbarkeit und Bedeutung der Dokumentation und Coding-Standards.
+### Konfigurationsmanagement
+
+Die Verwaltung der Konfiguration erfolgt über `appsettings.json`-Dateien und/oder Umgebungsvariablen, die es erlauben, die Einstellungen je nach Deployment-Umgebung einfach zu ändern. Durch die Trennung der Konfigurationseinstellungen in dedizierte Abschnitte für jedes Modul, kann die Engine flexibel auf die Bedürfnisse jedes Bereichs eingehen, ohne dass sich Einstellungen gegenseitig beeinflussen.
+
+#### Unabhängige Konfiguration der Bereiche
+
+Jeder Bereich der Videobearbeitungsplattform besitzt eine dedizierte Konfigurationssektion, die spezifisch auf seine Anforderungen zugeschnitten ist. Dies stellt sicher, dass die Konfigurationen isoliert voneinander bleiben und vereinfacht die Wartung und Erweiterung der Plattform.
+
+#### Beispiel für bereichsspezifische Konfigurationen:
+
+```json
+{
+  "MediaLibraryOptions": {
+    "LibraryPath": "/path/to/media/library"
+  },
+  "VideoProcessingOptions": {
+    "DefaultCodec": "H264",
+    "Resolution": "1080p"
+  }
+}
+```
+
+### Integration in die Engine
+
+Zur Laufzeit werden diese Konfigurationen durch das .NET Core DI-System injiziert und in die entsprechenden Modulkomponenten geladen. Dies geschieht über das `IServiceCollection`-Framework, das eine starke Typisierung und einfache Verwaltung der Konfigurationsdaten ermöglicht.
+
+```csharp
+services.Configure<MediaLibraryOptions>(Configuration.GetSection("MediaLibraryOptions"));
+services.Configure<VideoProcessingOptions>(Configuration.GetSection("VideoProcessingOptions"));
+```
+
+### Best Practices für die Konfiguration
+
+- **Klare Vertragsdefinition**: Jeder Konfigurationsbereich sollte durch eine klare und gut definierte Schnittstelle repräsentiert werden, um die Integration und das Management der Konfigurationsdaten zu vereinfachen.
+- **Einsatz von Umgebungsvariablen für übergreifende Einstellungen**: Für allgemeine oder sicherheitssensible Konfigurationen sollten Umgebungsvariablen verwendet werden, um die Flexibilität und Sicherheit zu erhöhen.
+- **Konsistente Namenskonventionen**: Die Namen der Konfigurationsbereiche und ihrer Schlüssel sollten sorgfältig gewählt werden, um Klarheit und Konsistenz zu gewährleisten.
+
+Die durchdachte Konfigurationsstrategie der Kurmann.Videoschnitt.Engine gewährleistet eine effiziente Skalierung und Anpassung an sich ändernde Anforderungen, während sie eine robuste und fehlerresistente Plattform für die Videobearbeitung bietet.
+
 
 ## Mitwirken
-Anleitung, wie man am Projekt mitwirken kann, inklusive Links zu Issues und Pull Requests.
+
+1. **Issue einreichen**: Wenn Sie einen Fehler finden oder eine Funktion anfordern möchten, eröffnen Sie ein Issue im GitHub-Repository.
+2. **Pull Requests**: Wenn Sie eine direkte Änderung oder Ergänzung vorschlagen möchten, senden Sie einen Pull Request mit einer klaren Beschreibung Ihrer Änderungen.
 
 ## Lizenz
-Informationen zur Lizenzierung des Projekts.
+
+Dieses Projekt ist unter der Apache-2.0-Lizenz lizenziert. Weitere Details finden Sie in der Datei [LICENSE](LICENSE) im GitHub-Repository. Diese Lizenz ermöglicht es sowohl kommerziellen als auch nicht-kommerziellen Nutzern, die Software frei zu verwenden, zu modifizieren und weiterzuverbreiten, unter der Bedingung, dass Änderungen und Erweiterungen unter der gleichen Lizenz bleiben.
 
 ## Kontakt
-Kontaktinformationen und wie man Unterstützung erhalten kann.
+
+Falls Sie Fragen haben oder Unterstützung benötigen, zögern Sie nicht, ein Issue im GitHub-Repository zu eröffnen oder uns direkt zu kontaktieren. Unsere Kontaktinformationen finden Sie auf der GitHub-Projektseite.
