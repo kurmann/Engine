@@ -37,13 +37,46 @@ Die Engine ist verantwortlich für die Steuerung der Workflows, die notwendig si
 Durch die Integration der `Kurmann.Messaging`-Bibliothek unterstützt die Engine ein leistungsstarkes, asynchrones Event-Handling, das eine lose Kopplung zwischen den Komponenten ermöglicht. Die Engine und die Module nutzen diese Funktion, um Zustandsänderungen, wichtige Ereignisse und andere relevante Informationen zu kommunizieren, wodurch eine reaktive und adaptive Systemumgebung geschaffen wird.
 
 ## API-Mechanismus der Module
-Beschreibung, wie die Module mit der Engine über APIs kommunizieren.
 
-### Commands und Queries
-Definition und Beispiele für die Verwendung von Commands und Queries innerhalb der Module.
+Die Kurmann.Videoschnitt.Engine ist darauf ausgelegt, durch eine gut definierte API die Kommunikation und Interaktion zwischen den einzelnen Modulen und der zentralen Engine zu ermöglichen. Dieses Kapitel beschreibt die verschiedenen Aspekte der API-Struktur, die es Entwicklern ermöglicht, ihre Module so zu implementieren, dass sie nahtlos in die Engine integriert werden können.
+
+### Allgemeine Prinzipien
+
+Die API jedes Moduls ist so gestaltet, dass sie eine klare Trennung zwischen verschiedenen Operationstypen bietet und sich an die Command Query Responsibility Segregation (CQRS) hält. Dieses Prinzip trennt die Befehle (Commands), die den Systemzustand ändern, von den Abfragen (Queries), die Daten abrufen, ohne den Zustand zu ändern. Durch diese Trennung wird die Effizienz gesteigert und die Klarheit der Operationen verbessert.
+
+#### Commands
+
+Commands sind Operationen, die eine Änderung im System bewirken. Sie können synchron oder asynchron ausgeführt werden:
+
+- **Initiate Commands**: Asynchrone Befehle, die einen Prozess starten, und eine Bestätigung über dessen Initiierung zurückgeben. Der Endstatus oder das Ergebnis wird über Events kommuniziert.
+  ```csharp
+  Task<Result> InitiateCommand(CommandParams parameters);
+  ```
+- **Direct Commands**: Synchrone Befehle, die sofort ausgeführt werden und direkt eine Antwort auf das Ergebnis der Operation liefern.
+  ```csharp
+  Result ExecuteCommand(CommandParams parameters);
+  ```
+
+#### Queries
+
+Queries sind Anfragen, die Informationen aus dem System abrufen, ohne den Zustand zu verändern. Sie können ebenfalls synchron oder asynchron sein:
+
+- **Direct Queries**: Synchrone Abfragen, die sofort Daten zurückliefern.
+  ```csharp
+  Result<T> ExecuteQuery<T>(QueryParams parameters);
+  ```
+- **Initiate Queries**: Asynchrone Abfragen, deren Ergebnisse später bereitgestellt werden.
+  ```csharp
+  Task<Result> InitiateQuery(QueryParams parameters);
+  ```
 
 ### Event-Driven APIs
-Erklärung, wie Events in die API-Struktur integriert sind und wie sie genutzt werden.
+
+Um die Interaktionen innerhalb der Plattform effizient und reaktionsfähig zu gestalten, unterstützt die API auch ein eventgesteuertes Modell. Dieses Modell ermöglicht es Modulen, Events zu generieren, die von der Engine oder anderen Modulen abonniert und verarbeitet werden können, um eine lose Kopplung und hohe Reaktionsfähigkeit des Gesamtsystems zu gewährleisten.
+
+### API-Dokumentation und Standards
+
+Eine umfassende Dokumentation jeder API ist unerlässlich, um eine korrekte und effiziente Nutzung der bereitgestellten Funktionalitäten sicherzustellen. Die Dokumentation sollte detaillierte Informationen zu den erwarteten Parametern, den Rückgabewerten, und dem Verhalten bei Fehlern für jede Art von Command oder Query enthalten. Dies stellt sicher, dass Entwickler klare und präzise Anleitungen haben, wie sie die APIs nutzen können, um eine nahtlose Integration und optimale Leistung zu erreichen.
 
 ## Lebenszyklusmanagement durch .NET's Hosted Service
 Beschreibung, wie das Lebenszyklusmanagement innerhalb der Engine durch .NET's Hosted Services realisiert wird.
