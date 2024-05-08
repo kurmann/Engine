@@ -17,16 +17,24 @@ Die Hauptrolle der Engine ist es, als Koordinator zu fungieren, der die Ausführ
 Diese Architektur erleichtert die Wartung und Skalierung der Plattform, indem sie eine klare Trennung der Verantwortlichkeiten ermöglicht und gleichzeitig die Interdependenzen zwischen den Modulen minimiert. So können Entwickler und Techniker schnell auf Veränderungen reagieren und neue Funktionen oder Verbesserungen mit minimalen Störungen für den Gesamtbetrieb implementieren.
 
 ## Kernfunktionen
-Auflistung und Beschreibung der wichtigsten Funktionen der Engine.
 
-## Event-Handling und Messaging
-Einführung in die Event-Handling-Strategien und die Integration der `Kurmann.Messaging`-Bibliothek.
+Die Kurmann.Videoschnitt.Engine bietet eine Vielzahl von Kernfunktionen, die darauf ausgelegt sind, eine leistungsfähige und flexible Videobearbeitungsplattform bereitzustellen. Jede dieser Funktionen trägt dazu bei, die Produktivität zu steigern und die Benutzerfreundlichkeit zu verbessern. Hier sind die wichtigsten Funktionen, die von unserer Engine angeboten werden:
 
-### Integration der Messaging-Komponente
-Detailierte Beschreibung, wie `Kurmann.Messaging` zur Kommunikation zwischen Modulen verwendet wird.
+### Modulintegration
 
-### Event Publikation und Subscription
-Beispiele, wie Events publiziert und abonniert werden.
+Die Engine verwendet das `IServiceCollection`-Framework, um die Integration verschiedener Videobearbeitungsmodule flexibel und konfigurierbar zu gestalten. Jedes Modul, wie z.B. Rendering, Schnitt oder Effekte, ist speziell darauf ausgelegt, bestimmte Funktionen zu handhaben und kann nach Bedarf in das Gesamtsystem eingefügt oder entfernt werden. Dies ermöglicht eine anpassbare Lösung, die sich sowohl an kleine als auch an große Produktionsumgebungen anpassen lässt.
+
+### Businesslogik-Orchestrierung
+
+Neben der technischen Koordination der Module steuert die Engine die Geschäftslogik, die die Entscheidungsfindung innerhalb des gesamten Systems leitet. Dies umfasst das Management von Benutzeranforderungen, die Priorisierung von Aufgaben und die Optimierung der Ressourcennutzung. Durch diese zentrale Steuerung wird sichergestellt, dass alle Aktionen im Einklang mit den Geschäftszielen und Kundenanforderungen stehen.
+
+### Workflow-Management
+
+Die Engine ist verantwortlich für die Steuerung der Workflows, die notwendig sind, um Videoprojekte von Anfang bis Ende zu managen. Dies beinhaltet die Planung und Ausführung von Aufgaben, das Management von Abhängigkeiten zwischen den Aufgaben und die Überwachung des Fortschritts. Die Workflow-Management-Funktionen sind darauf ausgerichtet, eine effiziente Durchführung der Videobearbeitungsprozesse zu gewährleisten und die Einhaltung der Projektpläne sicherzustellen.
+
+### Event-Handling und Messaging
+
+Durch die Integration der `Kurmann.Messaging`-Bibliothek unterstützt die Engine ein leistungsstarkes, asynchrones Event-Handling, das eine lose Kopplung zwischen den Komponenten ermöglicht. Die Engine und die Module nutzen diese Funktion, um Zustandsänderungen, wichtige Ereignisse und andere relevante Informationen zu kommunizieren, wodurch eine reaktive und adaptive Systemumgebung geschaffen wird.
 
 ## API-Mechanismus der Module
 Beschreibung, wie die Module mit der Engine über APIs kommunizieren.
