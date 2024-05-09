@@ -4,5 +4,5 @@ public class EngineSettings
 {
     public const string SectionName = "Engine";
 
-    public string[] WatchDirectories { get; set; } = [];
+    public string? WatchDirectory { get; set; }
 }

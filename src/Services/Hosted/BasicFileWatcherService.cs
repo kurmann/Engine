@@ -4,45 +4,41 @@ using Microsoft.Extensions.Options;
 
 namespace Kurmann.Videoschnitt.Engine.Hosted;
 
-public class BasicFileWatcherService(ILogger<BasicFileWatcherService> logger, IOptionsSnapshot<EngineSettings> options) : IHostedService, IDisposable
+public class BasicFileWatcherService(ILogger<BasicFileWatcherService> logger, IOptions<EngineSettings> options) : IHostedService, IDisposable
 {
     private readonly ILogger<BasicFileWatcherService> _logger = logger;
-    private readonly EngineSettings _servicesSettings = options.Value;
-    private readonly List<FileSystemWatcher> _watchers = [];
+    private readonly EngineSettings _settings = options.Value;
+    private FileSystemWatcher? _fileSystemWatcher;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        var watchDirectories = _servicesSettings.WatchDirectories;
-
-        if (watchDirectories == null || watchDirectories.Length == 0)
+        // Prüfen, ob ein Verzeichnis zum Überwachen konfiguriert ist
+        if (string.IsNullOrWhiteSpace(_settings.WatchDirectory))
         {
-            _logger.LogWarning("No directories to watch are configured.");
+            _logger.LogWarning("No directory to watch is configured.");
             return Task.CompletedTask;
         }
 
-        _logger.LogInformation("Watching directories: {directories}", string.Join(", ", watchDirectories));
-
-        foreach (var directory in watchDirectories)
-        {
-            var watcher = new FileSystemWatcher
-            {
-                Path = directory,
-                IncludeSubdirectories = true,
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
-            };
-
-            watcher.Created += OnCreated;
-            watcher.Renamed += OnRenamed;
-            watcher.Deleted += OnDeleted;
-            watcher.Changed += OnChanged;
-            watcher.EnableRaisingEvents = true;
-
-            // Speichern Sie die Instanz, um sie später freizugeben
-            _watchers.Add(watcher);
-        }
-
+        // Informationen ausgeben
+        _logger.LogInformation("Watching directories: {directories}", string.Join(", ", _settings.WatchDirectory.Split(';')));
         _logger.LogInformation("Media File Watcher Service is starting.");
 
+        // FileSystemWatcher initialisieren
+        _fileSystemWatcher = new FileSystemWatcher
+        {
+            IncludeSubdirectories = true,
+            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
+            Path = _settings.WatchDirectory
+        };
+
+        // Ereignisse abonnieren
+        _fileSystemWatcher.Created += OnCreated;
+        _fileSystemWatcher.Renamed += OnRenamed;
+        _fileSystemWatcher.Deleted += OnDeleted;
+        _fileSystemWatcher.Changed += OnChanged;
+        _fileSystemWatcher.EnableRaisingEvents = true;
+
+        // Task beenden
         return Task.CompletedTask;
     }
 
@@ -70,21 +66,14 @@ public class BasicFileWatcherService(ILogger<BasicFileWatcherService> logger, IO
     {
         _logger.LogInformation("Media File Watcher Service is stopping.");
 
-        foreach (var watcher in _watchers)
-        {
-            watcher.EnableRaisingEvents = false;
-            watcher.Dispose();
-        }
+        _fileSystemWatcher?.Dispose();
 
         return Task.CompletedTask;
     }
 
     public void Dispose()
     {
-        foreach (var watcher in _watchers)
-        {
-            watcher.Dispose();
-        }
+        _fileSystemWatcher?.Dispose();
         GC.SuppressFinalize(this);
     }
 }
