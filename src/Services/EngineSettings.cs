@@ -2,7 +2,7 @@ namespace Kurmann.Videoschnitt.Engine;
 
 public class EngineSettings
 {
-    public const string SectionName = "Kurmann.Videoschnitt.Engine";
+    public const string SectionName = "Engine";
 
-    public string[] WatchDirectories { get; set; } = [];
+    public string? WatchDirectory { get; set; }
 }

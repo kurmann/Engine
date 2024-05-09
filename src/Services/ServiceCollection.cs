@@ -11,7 +11,8 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         // Bindet Root-Konfigurationswerte an EngineSettings
-        services.Configure<EngineSettings>(configuration.GetSection(EngineSettings.SectionName));
+        var configurationSection = configuration.GetSection("Engine_WatchDirectory");
+        services.Configure<EngineSettings>(opts => opts.WatchDirectory = configurationSection.Value);
         
         // Dienste hinzufügen
         services.AddHostedService<BasicFileWatcherService>();
