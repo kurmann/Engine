@@ -135,32 +135,24 @@ public class VideoProcessingService : IHostedService
 }
 ```
 
-Dieses Kapitel zeigt, wie durch die Verwendung von .NET's Hosted Services ein effizientes Lebenszyklusmanagement für Module innerhalb der Kurmann.Videoschnitt.Engine realisiert wird, was zu einer verbesserten Stabilität und Zuverlässigkeit der Plattform führt.
-
 ## Konfiguration
 
-Die Konfiguration in der Kurmann.Videoschnitt.Engine spielt eine entscheidende Rolle bei der Anpassung und Skalierung der Plattform, um unterschiedlichen Anforderungen gerecht zu werden. Die Engine setzt auf hohe Modularität und Flexibilität in der Konfiguration der verschiedenen Bereiche ihrer Architektur, wobei das Options-Pattern von .NET genutzt wird, um Bereich-spezifische Einstellungen zu ermöglichen.
+Die Konfiguration in der Kurmann.Videoschnitt.Engine spielt eine entscheidende Rolle bei der Anpassung und Skalierung der Plattform, um unterschiedlichen Anforderungen gerecht zu werden. Die Engine setzt auf hohe Modularität und Flexibilität in der Konfiguration der verschiedenen Bereiche ihrer Architektur, wobei das Options-Pattern von .NET genutzt wird, um bereichsspezifische Einstellungen zu ermöglichen.
 
 ### Konfigurationsmanagement
 
-Die Verwaltung der Konfiguration erfolgt über `appsettings.json`-Dateien und/oder Umgebungsvariablen, die es erlauben, die Einstellungen je nach Deployment-Umgebung einfach zu ändern. Durch die Trennung der Konfigurationseinstellungen in dedizierte Abschnitte für jedes Modul, kann die Engine flexibel auf die Bedürfnisse jedes Bereichs eingehen, ohne dass sich Einstellungen gegenseitig beeinflussen.
+Die Verwaltung der Konfiguration erfolgt primär über Umgebungsvariablen, die es erlauben, die Einstellungen je nach Deployment-Umgebung einfach zu ändern. Durch die Trennung der Konfigurationseinstellungen in dedizierte Abschnitte für jedes Modul, kann die Engine flexibel auf die Bedürfnisse jedes Bereichs eingehen, ohne dass sich Einstellungen gegenseitig beeinflussen.
 
 #### Unabhängige Konfiguration der Bereiche
 
 Jeder Bereich der Videobearbeitungsplattform besitzt eine dedizierte Konfigurationssektion, die spezifisch auf seine Anforderungen zugeschnitten ist. Dies stellt sicher, dass die Konfigurationen isoliert voneinander bleiben und vereinfacht die Wartung und Erweiterung der Plattform.
 
-#### Beispiel für bereichsspezifische Konfigurationen:
+#### Beispiel für bereichsspezifische Umgebungsvariablen:
 
-```json
-{
-  "MediaLibraryOptions": {
-    "LibraryPath": "/path/to/media/library"
-  },
-  "VideoProcessingOptions": {
-    "DefaultCodec": "HEVC",
-    "Resolution": "4K"
-  }
-}
+```plaintext
+KurmannVideoschnitt_MediaLibraryOptions__LibraryPath=/path/to/media/library
+KurmannVideoschnitt_VideoProcessingOptions__DefaultCodec=HEVC
+KurmannVideoschnitt_VideoProcessingOptions__Resolution=4K
 ```
 
 ### Integration in die Engine
@@ -178,8 +170,16 @@ services.Configure<VideoProcessingOptions>(Configuration.GetSection("VideoProces
 - **Einsatz von Umgebungsvariablen für übergreifende Einstellungen**: Für allgemeine oder sicherheitssensible Konfigurationen sollten Umgebungsvariablen verwendet werden, um die Flexibilität und Sicherheit zu erhöhen.
 - **Konsistente Namenskonventionen**: Die Namen der Konfigurationsbereiche und ihrer Schlüssel sollten sorgfältig gewählt werden, um Klarheit und Konsistenz zu gewährleisten.
 
-Die durchdachte Konfigurationsstrategie der Kurmann.Videoschnitt.Engine gewährleistet eine effiziente Skalierung und Anpassung an sich ändernde Anforderungen, während sie eine robuste und fehlerresistente Plattform für die Videobearbeitung bietet.
+#### Handling von Arrays in Umgebungsvariablen
 
+Das Handling von Arrays in Umgebungsvariablen benötigt besondere Aufmerksamkeit, insbesondere bei der Verwendung von indizierten Werten. Hier ein Beispiel, wie die `WatchDirectories` in Umgebungsvariablen definiert werden können:
+
+```plaintext
+KurmannVideoschnitt_WatchDirectories__0=/pfad/zu/verzeichnis1
+KurmannVideoschnitt_WatchDirectories__1=/pfad/zu/verzeichnis2
+```
+
+Die Verwendung des doppelten Unterstrichs (`__`) ist essenziell, um hierarchische Datenstrukturen in Umgebungsvariablen korrekt zu repräsentieren und sicherzustellen, dass die Konfigurationseinstellungen korrekt von der .NET-Konfigurations-API gelesen und verarbeitet werden können.
 
 ## Mitwirken
 
