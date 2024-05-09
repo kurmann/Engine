@@ -137,54 +137,88 @@ public class VideoProcessingService : IHostedService
 
 ## Konfiguration
 
-Die Konfiguration der Kurmann.Videoschnitt.Engine ist ein zentraler Aspekt, um die Plattform an verschiedene Anforderungen anzupassen. Die Engine profitiert von einer starken Modularität und Flexibilität in der Konfigurationsgestaltung. Durch die Vereinfachung der Konfigurationsnamen wird die Übersichtlichkeit verbessert, indem nur der Projektnamen als Präfix verwendet wird.
+Die Konfiguration der Kurmann.Videoschnitt.Engine ist entscheidend für die Anpassung und Skalierung der Plattform, um unterschiedlichen Anforderungen gerecht zu werden. Das Konzept der Konfigurationssektionen spielt dabei eine zentrale Rolle, da es eine klare Trennung und Organisation der Einstellungen nach fachlichen Domänen ermöglicht.
 
-### Konfigurationsmanagement
+### Konfigurationsmanagement mit Sections
 
-Das Management der Konfiguration erfolgt durch den Einsatz von Umgebungsvariablen, wodurch sich die Einstellungen je nach Deployment-Umgebung einfach anpassen lassen. Durch die Konzentration auf einfache und direkte Namenskonventionen, die auf dem Projektnamen basieren, kann die Plattform effektiv auf spezifische Bedürfnisse zugeschnitten werden, ohne unnötige Komplexität.
+Sections in der Konfiguration dienen dazu, Einstellungen thematisch zu gruppieren. Jede Section repräsentiert eine Fachdomäne, wie beispielsweise die "LocalMediaLibrary", und enthält alle relevanten Einstellungen. Diese Herangehensweise fördert die Modularität und Wartbarkeit der Konfiguration.
 
-#### Vereinfachte Konfigurationsnamen
+#### Definition der Sections
 
-Jedes Modul der Videobearbeitungsplattform verwendet nun einen dedizierten, einfachen Namen, der direkt auf den Zweck des Moduls verweist. Dies erleichtert das Verständnis und die Verwaltung der Konfigurationsparameter.
+In der Konfigurationsdatei `appsettings.json` könnten die Sections wie folgt definiert sein:
 
-#### Beispiel für vereinfachte Umgebungsvariablen:
-
-Für das Modul `MediaFileWatcher` könnten die Einstellungen wie folgt definiert sein:
-
-```plaintext
-MediaFileWatcher_WatchDirectories__0=/pfad/zu/verzeichnis1
-MediaFileWatcher_WatchDirectories__1=/pfad/zu/verzeichnis2
+```json
+{
+  "LocalMediaLibrary": {
+    "LibraryPath": "/path/to/media/library",
+    "CacheSize": 1024
+  }
+}
 ```
 
-Für das Modul `VideoFileProcessor` könnten ähnliche Einstellungen wie folgt aussehen:
+#### Verwendung von Umgebungsvariablen
 
-```plaintext
-VideoFileProcessor_DefaultCodec=HEVC
-VideoFileProcessor_Resolution=4K
+In Docker- oder anderen containerisierten Umgebungen ist es üblich, Konfigurationen über Umgebungsvariablen zu steuern. Dies erlaubt eine flexible und sichere Handhabung von Konfigurationswerten. Für die obige Section könnten die entsprechenden Umgebungsvariablen so gesetzt werden:
+
+- `LocalMediaLibrary__LibraryPath="/path/to/media/library"`
+- `LocalMediaLibrary__CacheSize="1024"`
+
+Diese Variablen würden typischerweise in der Docker-Konfiguration oder durch das Container-Orchestrierungssystem gesetzt:
+
+```dockerfile
+ENV LocalMediaLibrary__LibraryPath="/path/to/media/library"
+ENV LocalMediaLibrary__CacheSize="1024"
 ```
 
-### Integration in die Engine
+### Implementierung mittels Options Pattern
 
-Zur Laufzeit werden diese Konfigurationen durch das .NET Core DI-System injiziert und in die entsprechenden Modulkomponenten geladen. Dies erfolgt über das `IServiceCollection`-Framework, welches eine starke Typisierung und eine einfache Verwaltung der Konfigurationsdaten ermöglicht.
+Das Options Pattern in .NET ermöglicht eine starke Typisierung der Konfigurationseinstellungen. Durch das Definieren von Konfigurationsklassen für jede Section und die Bindung dieser Klassen an die entsprechenden Sections in der Konfigurationsdatei oder die Umgebungsvariablen kann eine sichere und übersichtliche Verwaltung der Einstellungen erreicht werden.
+
+#### Konfigurationsklasse
+
+Für jede Section wird eine Klasse definiert, die die Einstellungen als Eigenschaften enthält. Beispiel für die `LocalMediaLibrary`:
 
 ```csharp
-services.Configure<MediaFileWatcherSettings>(Configuration.GetSection("MediaFileWatcher"));
-services.Configure<VideoFileProcessorSettings>(Configuration.GetSection("VideoFileProcessor"));
+public class LocalMediaLibrarySettings
+{
+    public string LibraryPath { get; set; }
+    public int CacheSize { get; set; }
+}
 ```
 
-### Best Practices für die Konfiguration
+#### Bindung der Konfigurationsklassen
 
-- **Klare Vertragsdefinition**: Jeder Konfigurationsbereich sollte durch eine klare und gut definierte Schnittstelle repräsentiert werden, um die Integration und das Management der Konfigurationsdaten zu vereinfachen.
-- **Einsatz von Umgebungsvariablen für übergreifende Einstellungen**: Umgebungsvariablen bieten Flexibilität und Sicherheit und sollten daher für generelle oder sicherheitssensible Konfigurationen verwendet werden.
-- **Konsistente und einfache Namenskonventionen**: Die Namen der Konfigurationsbereiche sollten sorgfältig gewählt werden, um Klarheit und Konsistenz zu gewährleisten. Die Verwendung des Modulnamens als Präfix hilft dabei, die Konfiguration übersichtlich und direkt verständlich zu gestalten.
+Die Bindung erfolgt im Startup der Anwendung, wo die `Configure`-Methode des `IServiceCollection` verwendet wird, um die Konfigurationsklassen mit den entsprechenden Sections zu verknüpfen:
+
+```csharp
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddEngine(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<LocalMediaLibrarySettings>(configuration.GetSection("LocalMediaLibrary"));
+        // Weitere Services hinzufügen
+        return services;
+    }
+}
+```
+
+### Vorteile dieser Strategie
+
+- **Klarheit und Ordnung**: Durch die Verwendung von Sections wird die Konfiguration klar und übersichtlich gehalten.
+- **Flexibilität und Sicherheit**: Umgebungsvariablen bieten eine flexible und sichere Methode zur Konfigurationsverwaltung, besonders in Produktionsumgebungen.
+- **Typsicherheit**: Das Options Pattern stellt sicher, dass die Konfigurationswerte korrekt typisiert sind, was die Fehleranfälligkeit reduziert.
+
+Diese Strategie gewährleistet, dass die Konfiguration der Kurmann.Videoschnitt.Engine effizient verwaltet und an sich ändernde Anforderungen angepasst werden kann, während gleichzeitig eine robuste und fehlerresistente Plattform für die Videobearbeitung geboten wird.
 
 #### Handling von Arrays in Umgebungsvariablen
 
 Die Handhabung von Arrays in Umgebungsvariablen erfordert weiterhin die Verwendung des doppelten Unterstrichs (`__`) für die Indizierung, um eine klare Struktur und eine korrekte Interpretation der Daten zu gewährleisten. Hier ein Beispiel, wie dies in der Praxis umgesetzt wird:
 
 ```plaintext
-MediaFileWatcher_WatchDirectories__0=/pfad/zu/verzeichnis1
-MediaFileWatcher_WatchDirectories__1=/pfad/zu/verzeichnis2
+MediaFileWatcher___WatchDirectories__0=/pfad/zu/verzeichnis1
+MediaFileWatcher__WatchDirectories__1=/pfad/zu/verzeichnis2
 ```
 
 Die Neugestaltung der Konfigurationsstrategie der Kurmann.Videoschnitt.Engine trägt zur effizienten Skalierung und Anpassung an sich ändernde Anforderungen bei und gewährleistet gleichzeitig eine robuste und fehlerresistente Plattform für die Videobearbeitung.
