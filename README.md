@@ -137,49 +137,57 @@ public class VideoProcessingService : IHostedService
 
 ## Konfiguration
 
-Die Konfiguration in der Kurmann.Videoschnitt.Engine spielt eine entscheidende Rolle bei der Anpassung und Skalierung der Plattform, um unterschiedlichen Anforderungen gerecht zu werden. Die Engine setzt auf hohe Modularität und Flexibilität in der Konfiguration der verschiedenen Bereiche ihrer Architektur, wobei das Options-Pattern von .NET genutzt wird, um bereichsspezifische Einstellungen zu ermöglichen.
+Die Konfiguration der Kurmann.Videoschnitt.Engine ist ein zentraler Aspekt, um die Plattform an verschiedene Anforderungen anzupassen. Die Engine profitiert von einer starken Modularität und Flexibilität in der Konfigurationsgestaltung. Durch die Vereinfachung der Konfigurationsnamen wird die Übersichtlichkeit verbessert, indem nur der Projektnamen als Präfix verwendet wird.
 
 ### Konfigurationsmanagement
 
-Die Verwaltung der Konfiguration erfolgt primär über Umgebungsvariablen, die es erlauben, die Einstellungen je nach Deployment-Umgebung einfach zu ändern. Durch die Trennung der Konfigurationseinstellungen in dedizierte Abschnitte für jedes Modul, kann die Engine flexibel auf die Bedürfnisse jedes Bereichs eingehen, ohne dass sich Einstellungen gegenseitig beeinflussen.
+Das Management der Konfiguration erfolgt durch den Einsatz von Umgebungsvariablen, wodurch sich die Einstellungen je nach Deployment-Umgebung einfach anpassen lassen. Durch die Konzentration auf einfache und direkte Namenskonventionen, die auf dem Projektnamen basieren, kann die Plattform effektiv auf spezifische Bedürfnisse zugeschnitten werden, ohne unnötige Komplexität.
 
-#### Unabhängige Konfiguration der Bereiche
+#### Vereinfachte Konfigurationsnamen
 
-Jeder Bereich der Videobearbeitungsplattform besitzt eine dedizierte Konfigurationssektion, die spezifisch auf seine Anforderungen zugeschnitten ist. Dies stellt sicher, dass die Konfigurationen isoliert voneinander bleiben und vereinfacht die Wartung und Erweiterung der Plattform.
+Jedes Modul der Videobearbeitungsplattform verwendet nun einen dedizierten, einfachen Namen, der direkt auf den Zweck des Moduls verweist. Dies erleichtert das Verständnis und die Verwaltung der Konfigurationsparameter.
 
-#### Beispiel für bereichsspezifische Umgebungsvariablen:
+#### Beispiel für vereinfachte Umgebungsvariablen:
+
+Für das Modul `MediaFileWatcher` könnten die Einstellungen wie folgt definiert sein:
 
 ```plaintext
-KurmannVideoschnitt_MediaLibraryOptions__LibraryPath=/path/to/media/library
-KurmannVideoschnitt_VideoProcessingOptions__DefaultCodec=HEVC
-KurmannVideoschnitt_VideoProcessingOptions__Resolution=4K
+MediaFileWatcher_WatchDirectories__0=/pfad/zu/verzeichnis1
+MediaFileWatcher_WatchDirectories__1=/pfad/zu/verzeichnis2
+```
+
+Für das Modul `VideoFileProcessor` könnten ähnliche Einstellungen wie folgt aussehen:
+
+```plaintext
+VideoFileProcessor_DefaultCodec=HEVC
+VideoFileProcessor_Resolution=4K
 ```
 
 ### Integration in die Engine
 
-Zur Laufzeit werden diese Konfigurationen durch das .NET Core DI-System injiziert und in die entsprechenden Modulkomponenten geladen. Dies geschieht über das `IServiceCollection`-Framework, das eine starke Typisierung und einfache Verwaltung der Konfigurationsdaten ermöglicht.
+Zur Laufzeit werden diese Konfigurationen durch das .NET Core DI-System injiziert und in die entsprechenden Modulkomponenten geladen. Dies erfolgt über das `IServiceCollection`-Framework, welches eine starke Typisierung und eine einfache Verwaltung der Konfigurationsdaten ermöglicht.
 
 ```csharp
-services.Configure<MediaLibraryOptions>(Configuration.GetSection("MediaLibraryOptions"));
-services.Configure<VideoProcessingOptions>(Configuration.GetSection("VideoProcessingOptions"));
+services.Configure<MediaFileWatcherSettings>(Configuration.GetSection("MediaFileWatcher"));
+services.Configure<VideoFileProcessorSettings>(Configuration.GetSection("VideoFileProcessor"));
 ```
 
 ### Best Practices für die Konfiguration
 
 - **Klare Vertragsdefinition**: Jeder Konfigurationsbereich sollte durch eine klare und gut definierte Schnittstelle repräsentiert werden, um die Integration und das Management der Konfigurationsdaten zu vereinfachen.
-- **Einsatz von Umgebungsvariablen für übergreifende Einstellungen**: Für allgemeine oder sicherheitssensible Konfigurationen sollten Umgebungsvariablen verwendet werden, um die Flexibilität und Sicherheit zu erhöhen.
-- **Konsistente Namenskonventionen**: Die Namen der Konfigurationsbereiche und ihrer Schlüssel sollten sorgfältig gewählt werden, um Klarheit und Konsistenz zu gewährleisten.
+- **Einsatz von Umgebungsvariablen für übergreifende Einstellungen**: Umgebungsvariablen bieten Flexibilität und Sicherheit und sollten daher für generelle oder sicherheitssensible Konfigurationen verwendet werden.
+- **Konsistente und einfache Namenskonventionen**: Die Namen der Konfigurationsbereiche sollten sorgfältig gewählt werden, um Klarheit und Konsistenz zu gewährleisten. Die Verwendung des Modulnamens als Präfix hilft dabei, die Konfiguration übersichtlich und direkt verständlich zu gestalten.
 
 #### Handling von Arrays in Umgebungsvariablen
 
-Das Handling von Arrays in Umgebungsvariablen benötigt besondere Aufmerksamkeit, insbesondere bei der Verwendung von indizierten Werten. Hier ein Beispiel, wie die `WatchDirectories` in Umgebungsvariablen definiert werden können:
+Die Handhabung von Arrays in Umgebungsvariablen erfordert weiterhin die Verwendung des doppelten Unterstrichs (`__`) für die Indizierung, um eine klare Struktur und eine korrekte Interpretation der Daten zu gewährleisten. Hier ein Beispiel, wie dies in der Praxis umgesetzt wird:
 
 ```plaintext
-KurmannVideoschnitt_WatchDirectories__0=/pfad/zu/verzeichnis1
-KurmannVideoschnitt_WatchDirectories__1=/pfad/zu/verzeichnis2
+MediaFileWatcher_WatchDirectories__0=/pfad/zu/verzeichnis1
+MediaFileWatcher_WatchDirectories__1=/pfad/zu/verzeichnis2
 ```
 
-Die Verwendung des doppelten Unterstrichs (`__`) ist essenziell, um hierarchische Datenstrukturen in Umgebungsvariablen korrekt zu repräsentieren und sicherzustellen, dass die Konfigurationseinstellungen korrekt von der .NET-Konfigurations-API gelesen und verarbeitet werden können.
+Die Neugestaltung der Konfigurationsstrategie der Kurmann.Videoschnitt.Engine trägt zur effizienten Skalierung und Anpassung an sich ändernde Anforderungen bei und gewährleistet gleichzeitig eine robuste und fehlerresistente Plattform für die Videobearbeitung.
 
 ## Mitwirken
 
