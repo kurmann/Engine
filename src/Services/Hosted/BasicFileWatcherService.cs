@@ -8,13 +8,12 @@ public class BasicFileWatcherService(ILogger<BasicFileWatcherService> logger, IO
 {
     private readonly ILogger<BasicFileWatcherService> _logger = logger;
     private readonly EngineSettings _servicesSettings = options.Value;
-    private FileSystemWatcher? _fileSystemWatcher;
+    private readonly List<FileSystemWatcher> _watchers = [];
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         var watchDirectories = _servicesSettings.WatchDirectories;
 
-        // Logge Warnung, wenn keine Verzeichnisse zum Überwachen konfiguriert sind
         if (watchDirectories == null || watchDirectories.Length == 0)
         {
             _logger.LogWarning("No directories to watch are configured.");
@@ -23,23 +22,26 @@ public class BasicFileWatcherService(ILogger<BasicFileWatcherService> logger, IO
 
         _logger.LogInformation("Watching directories: {directories}", string.Join(", ", watchDirectories));
 
-        _logger.LogInformation("Media File Watcher Service is starting.");
-
-        _fileSystemWatcher = new FileSystemWatcher
-        {
-            IncludeSubdirectories = true,
-            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
-        };
-
         foreach (var directory in watchDirectories)
         {
-            _fileSystemWatcher.Path = directory;
-            _fileSystemWatcher.Created += OnCreated;
-            _fileSystemWatcher.Renamed += OnRenamed;
-            _fileSystemWatcher.Deleted += OnDeleted;
-            _fileSystemWatcher.Changed += OnChanged;
-            _fileSystemWatcher.EnableRaisingEvents = true;
+            var watcher = new FileSystemWatcher
+            {
+                Path = directory,
+                IncludeSubdirectories = true,
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
+            };
+
+            watcher.Created += OnCreated;
+            watcher.Renamed += OnRenamed;
+            watcher.Deleted += OnDeleted;
+            watcher.Changed += OnChanged;
+            watcher.EnableRaisingEvents = true;
+
+            // Speichern Sie die Instanz, um sie später freizugeben
+            _watchers.Add(watcher);
         }
+
+        _logger.LogInformation("Media File Watcher Service is starting.");
 
         return Task.CompletedTask;
     }
@@ -68,14 +70,21 @@ public class BasicFileWatcherService(ILogger<BasicFileWatcherService> logger, IO
     {
         _logger.LogInformation("Media File Watcher Service is stopping.");
 
-        _fileSystemWatcher?.Dispose();
+        foreach (var watcher in _watchers)
+        {
+            watcher.EnableRaisingEvents = false;
+            watcher.Dispose();
+        }
 
         return Task.CompletedTask;
     }
 
     public void Dispose()
     {
-        _fileSystemWatcher?.Dispose();
+        foreach (var watcher in _watchers)
+        {
+            watcher.Dispose();
+        }
         GC.SuppressFinalize(this);
     }
 }
