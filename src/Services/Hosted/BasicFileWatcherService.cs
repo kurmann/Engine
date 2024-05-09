@@ -20,8 +20,8 @@ public class BasicFileWatcherService(ILogger<BasicFileWatcherService> logger, IO
         }
 
         // Informationen ausgeben
-        _logger.LogInformation("Watching directories: {directories}", string.Join(", ", _settings.WatchDirectory.Split(';')));
         _logger.LogInformation("Media File Watcher Service is starting.");
+        _logger.LogInformation("Watching directory: {directory}", _settings.WatchDirectory);
 
         // FileSystemWatcher initialisieren
         _fileSystemWatcher = new FileSystemWatcher
