@@ -234,4 +234,4 @@ Dieses Projekt ist unter der Apache-2.0-Lizenz lizenziert. Weitere Details finde
 
 ## Kontakt
 
-Falls Sie Fragen haben oder Unterstützung benötigen, zögern Sie nicht, ein Issue im GitHub-Repository zu eröffnen oder uns direkt zu kontaktieren. Unsere Kontaktinformationen finden Sie auf der GitHub-Projektseite.
+Falls Sie Fragen haben oder Unterstützung benötigen, eröffnen sie bitte ein Issue im GitHub-Repository.
