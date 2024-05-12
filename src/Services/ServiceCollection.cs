@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.Configure<EngineSettings>(configuration.GetSection("Engine"));
         
         // Dienste hinzufügen
+        services.AddHostedService<SampleHostedService>();
         services.AddHostedService<BasicFileWatcherService>();
         
         return services;
