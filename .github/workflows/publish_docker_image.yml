@@ -41,11 +41,12 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./src
+          file: ./src/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-        id: docker_build  # Wichtig, um später darauf verweisen zu können
+        id: docker_build
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
@@ -53,4 +54,3 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.docker_build.outputs.digest }}  # Verwendung des Digests aus dem Docker Build-Schritt
           push-to-registry: true
-
