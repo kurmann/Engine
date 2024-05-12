@@ -3,7 +3,7 @@ name: Create and publish a Docker image
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   release:
-    types: [published, prereleased]
+    types: [prereleased]
   workflow_dispatch:
 
 # Defines two custom environment variables for the workflow.
