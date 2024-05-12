@@ -47,7 +47,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images:
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
 
       - name: Set lower case image name # Avoid invalid image name on artifact attestation
         run: echo "IMAGE_NAME_LOWER=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
