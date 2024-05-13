@@ -37,7 +37,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
-          tag-semver: '{{version}}'
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha
         
 
       - name: Print labels and tags
