@@ -10,6 +10,7 @@ on:
 env:
   REGISTRY: docker.io
   DOCKERFILE_DIR: ./src
+  DOCKER_IMAGE_NAME: videoschnitt.engine
 
 jobs:
   build-and-push-image:
