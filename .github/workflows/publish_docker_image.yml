@@ -37,22 +37,23 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
+          tags: 0.4.0-preview-12  # Manueller Tag ohne 'v'
 
       - name: Print labels and tags
         run: |
           echo "Labels: ${{ steps.meta.outputs.labels }}"
           echo "Tags: ${{ steps.meta.outputs.tags }}"
 
-          - name: Build and push Docker image
-          uses: docker/build-push-action@v3
-          with:
-            context: ${{ env.DOCKERFILE_DIR }}
-            file: ${{ env.DOCKERFILE_DIR }}/Dockerfile
-            push: false
-            tags: ${{ steps.meta.outputs.tags }}
-            labels: ${{ steps.meta.outputs.labels }}
-          id: docker_build
-  
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ env.DOCKERFILE_DIR }}
+          file: ${{ env.DOCKERFILE_DIR }}/Dockerfile
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+        id: docker_build
+
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
