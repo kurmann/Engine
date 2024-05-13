@@ -9,6 +9,7 @@ on:
 # Defines two custom environment variables for the workflow.
 env:
   IMAGE_NAME: videoschnitt.engine
+  DOCKERFILE_DIR: ./src
 
 jobs:
   build-and-push-image:
@@ -34,8 +35,8 @@ jobs:
         id: docker_build_ghcr
         uses: docker/build-push-action@v5
         with:
-          context: ./src
-          file: ./src/Dockerfile
+          context: ${{ env.DOCKERFILE_DIR }}
+          file: ${{ env.DOCKERFILE_DIR }}/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
@@ -50,8 +51,8 @@ jobs:
         id: docker_build_dockerhub
         uses: docker/build-push-action@v5
         with:
-          context: ./src
-          file: ./src/Dockerfile
+          context: ${{ env.DOCKERFILE_DIR }}
+          file: ${{ env.DOCKERFILE_DIR }}/Dockerfile
           push: true
           tags: docker.io/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
