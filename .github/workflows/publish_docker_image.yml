@@ -25,6 +25,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Print GitHub Actor and Image Name
+        run: |
+          echo "GitHub Actor: ${{ github.actor }}"
+          echo "Image Name: ${{ env.IMAGE_NAME }}"
+          echo "Registry: ${{ env.REGISTRY }}"
+          echo "Docker Username: ${{ secrets.DOCKER_USERNAME }}"
+
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
