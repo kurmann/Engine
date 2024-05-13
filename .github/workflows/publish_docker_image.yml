@@ -25,13 +25,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Print GitHub Actor and Image Name
-        run: |
-          echo "GitHub Actor: ${{ github.actor }}"
-          echo "Image Name: ${{ env.IMAGE_NAME }}"
-          echo "Registry: ${{ env.REGISTRY }}"
-          echo "Docker Username: ${{ secrets.DOCKER_USERNAME }}"
-
       - name: Generate and print lower case image name
         run: |
           echo "IMAGE_NAME_LOWER=${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'" >> $GITHUB_ENV
