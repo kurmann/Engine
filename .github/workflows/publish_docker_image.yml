@@ -1,14 +1,14 @@
-name: Publish Docker image
+name: Create and publish a Docker image
 
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   release:
-    types: [prereleased]
+    types: [published, prereleased]
   workflow_dispatch:
 
 # Defines two custom environment variables for the workflow.
 env:
-  IMAGE_NAME: videoschnitt.engine
+  REGISTRY: docker.io
   DOCKERFILE_DIR: ./src
 
 jobs:
@@ -24,48 +24,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image to GitHub Container Registry
-        id: docker_build_ghcr
-        uses: docker/build-push-action@v5
-        with:
-          context: ${{ env.DOCKERFILE_DIR }}
-          file: ${{ env.DOCKERFILE_DIR }}/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
-          registry: docker.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image to Docker Hub
-        id: docker_build_dockerhub
-        uses: docker/build-push-action@v5
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
         with:
           context: ${{ env.DOCKERFILE_DIR }}
           file: ${{ env.DOCKERFILE_DIR }}/Dockerfile
           push: true
-          tags: docker.io/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+        id: docker_build
 
-      - name: Generate artifact attestation for GitHub Container Registry
+      - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
-            subject-name: ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}
-            subject-digest: ${{ steps.docker_build_ghcr.outputs.digest }}
-            push-to-registry: true
-
-      - name: Generate artifact attestation for Docker Hub
-        uses: actions/attest-build-provenance@v1
-        with:
-            subject-name: docker.io/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
-            subject-digest: ${{ steps.docker_build_dockerhub.outputs.digest }}
-            push-to-registry: true
+          subject-name: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}
+          subject-digest: ${{ steps.docker_build.outputs.digest }}
+          push-to-registry: true
