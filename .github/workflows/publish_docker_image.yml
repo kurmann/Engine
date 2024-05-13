@@ -37,7 +37,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
-          tags: 0.4.0-preview-12  # Manueller Tag ohne 'v'
+          tag-semver: '{{version}}'
+        
 
       - name: Print labels and tags
         run: |
