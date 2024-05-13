@@ -8,7 +8,6 @@ on:
 
 # Defines two custom environment variables for the workflow.
 env:
-  REGISTRY: ghcr.io
   IMAGE_NAME: videoschnitt.engine
 
 jobs:
