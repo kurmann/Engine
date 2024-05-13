@@ -39,8 +39,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
-            type=sha
-        
 
       - name: Print labels and tags
         run: |
