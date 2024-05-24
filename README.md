@@ -223,6 +223,50 @@ MediaFileWatcher__WatchDirectories__1=/pfad/zu/verzeichnis2
 
 Die Neugestaltung der Konfigurationsstrategie der Kurmann.Videoschnitt.Engine trägt zur effizienten Skalierung und Anpassung an sich ändernde Anforderungen bei und gewährleistet gleichzeitig eine robuste und fehlerresistente Plattform für die Videobearbeitung.
 
+## Methode zur Dateisystemüberwachung
+
+### Ausgangssituation
+
+Du hast eine .NET-Anwendung, die in einem Docker-Container auf einer Synology NAS läuft, und möchtest das Dateisystem überwachen, um Dateiänderungen zu erkennen. Auf Windows und macOS funktionierte der `FileSystemWatcher` tadellos, jedoch gab es Probleme in der Linux-Umgebung des Synology NAS.
+
+### Diskussion der Lösungsansätze
+
+1. **Erhöhung der Inotify-Limits**:
+    - Erhöhung der Inotify-Watch-Limits auf dem Synology NAS, um mehr Dateien und Verzeichnisse überwachen zu können.
+    - Diese Lösung könnte die Performance-Probleme teilweise lösen, aber es bestehen weiterhin potenzielle Einschränkungen und Probleme mit Inotify in Docker-Containern.
+
+2. **Polling-Ansatz**:
+    - Implementierung eines Polling-Ansatzes, der regelmäßig das Dateisystem scannt, um Änderungen zu erkennen.
+    - Obwohl dieser Ansatz zuverlässig ist, kann er bei großen Verzeichnisstrukturen erhebliche Systemressourcen beanspruchen, besonders bei kurzen Intervallen.
+
+3. **CLI zum manuellen Antreiben von Verzeichnisscans**:
+    - Verwendung von CLI-Befehlen, um das Scannen des Dateisystems manuell anzustoßen.
+    - Diese Methode erlaubt eine gezielte Überwachung ohne kontinuierliches Polling, könnte jedoch umständlich sein, wenn viele manuelle Eingriffe erforderlich sind.
+
+4. **HTTP-Endpoints zur Auslösung von Scans**:
+    - Implementierung von HTTP-Endpoints in der .NET-Anwendung, die externe Systeme oder Skripte nutzen können, um den Scan zu starten.
+    - Diese Lösung ermöglicht eine flexible und ereignisbasierte Überwachung, bei der externe Programme (wie ein Videoschnittprogramm) nach Abschluss eines Exports einen Scan auslösen können.
+
+5. **Synology API zur Überwachung und Benachrichtigung**:
+    - Verwendung der Synology File Station API, um Dateiänderungen zu überwachen und Benachrichtigungen an die Docker-Anwendung zu senden.
+    - Dieser Ansatz nutzt die vorhandenen Tools und Dienste der Synology NAS, um Änderungen effizient zu erkennen und zu verarbeiten.
+
+### Entscheidungsfindung
+
+Nach der Diskussion der verschiedenen Ansätze wurde entschieden, einen hybriden Ansatz zu wählen, der folgende Aspekte kombiniert:
+
+- **Periodisches Polling**: Das Dateisystem wird alle Stunde gescannt, was eine vertretbare Belastung für die Systemressourcen darstellt.
+- **HTTP-Endpoint für Echtzeit-Scans**: Implementierung einer Minimal API in der .NET-Anwendung, um Verzeichnisscans manuell anzustoßen. Diese API kann von externen Systemen (z.B. dem Videoschnittprogramm) genutzt werden, um sofortige Scans nach Bedarf auszulösen.
+- **Flexibilität durch Umgebungsvariablen**: Das Zeitintervall für das Polling kann manuell über Umgebungsvariablen angepasst werden, um auf unterschiedliche Last- und Anwendungsanforderungen flexibel reagieren zu können.
+
+### Gründe für die Entscheidung
+
+- **Performance**: Ein stündliches Polling-Intervall stellt sicher, dass die Systemressourcen nicht übermäßig belastet werden, während regelmäßige Überprüfungen weiterhin stattfinden.
+- **Flexibilität**: Durch die Möglichkeit, Scans manuell anzustoßen, kann auf spezifische Ereignisse (wie das Abschließen eines Videoexports) sofort reagiert werden, ohne auf das nächste Polling-Intervall warten zu müssen.
+- **Einfache Implementierung und Wartung**: Der hybride Ansatz ist relativ einfach zu implementieren und zu warten, da er die Vorteile von periodischem Polling und ereignisbasierter Überwachung kombiniert.
+
+Durch diese Lösung wird ein guter Kompromiss zwischen Systemressourcen und Reaktionszeit erreicht, was die Überwachung des Dateisystems effizient und flexibel gestaltet.
+
 ## Mitwirken
 
 1. **Issue einreichen**: Wenn Sie einen Fehler finden oder eine Funktion anfordern möchten, eröffnen Sie ein Issue im GitHub-Repository.
