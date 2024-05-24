@@ -1,8 +1,7 @@
-namespace Kurmann.Videoschnitt.Engine;
-
-public class EngineSettings
+namespace Kurmann.Videoschnitt.Engine
 {
-    public const string SectionName = "Engine";
-
-    public string? WatchDirectory { get; set; }
+    public class EngineSettings
+    {
+        public List<string>? NewOriginalMediaDirectories { get; set; }
+    }
 }

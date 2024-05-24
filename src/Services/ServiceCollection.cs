@@ -15,7 +15,6 @@ public static class ServiceCollectionExtensions
         
         // Dienste hinzufügen
         services.AddHostedService<SampleHostedService>();
-        services.AddHostedService<BasicFileWatcherService>();
         
         return services;
     }
