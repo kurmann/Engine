@@ -1,5 +1,13 @@
 # Kurmann.Videoschnitt.Engine
 
+## Archiviert
+
+### Dieses Repository wurde in das Monorepo "kurmann/videoschnitt" migriert
+
+**Hinweis:** Dieses Repository wird nicht mehr aktiv weiterentwickelt und ist archiviert. Die Entwicklung wird nun im Monorepo [kurmann/videoschnitt](https://github.com/kurmann/videoschnitt) fortgeführt.
+
+---
+
 ## Überblick
 
 Die Kurmann.Videoschnitt.Engine ist das Kernstück unserer Videobearbeitungsplattform und dient als zentrale Steuereinheit, die die verschiedenen spezialisierten Module koordiniert. Diese Module arbeiten zusammen, um umfassende Lösungen im Bereich des Videoschnitts zu bieten. Entwickelt mit dem Ziel, Flexibilität und Robustheit zu maximieren, bietet die Engine eine Plattform für die Integration von Videobearbeitungsmodulen wie Rendering, Schnitt, Effekte und mehr.
